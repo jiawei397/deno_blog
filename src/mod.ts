@@ -18,7 +18,7 @@ router
   .get("/", (context) => {
     context.response.body = "hello world";
   })
-  .get("/users", (context) => {
+  .get("/user", (context) => {
     context.response.body = Array.from(users.values());
   })
   .get("/user/:id", (context) => {
