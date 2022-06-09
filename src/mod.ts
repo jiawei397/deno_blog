@@ -1,17 +1,6 @@
 import { Application, Router } from "https://deno.land/x/oak@v10.5.0/mod.ts";
 
-interface User {
-  id: number;
-  author: string;
-  age: number;
-}
-const users = new Map<number, User>();
-const user1: User = {
-  id: 1,
-  author: "张三",
-  age: 18,
-};
-users.set(user1.id, user1);
+import { userService } from "./user.service.ts";
 
 const router = new Router();
 router
@@ -19,12 +8,13 @@ router
     context.response.body = "hello world";
   })
   .get("/user", (context) => {
-    context.response.body = Array.from(users.values());
+    context.response.body = userService.getAll();
   })
   .get("/user/:id", (context) => {
     const id = Number(context.params.id);
-    if (users.has(id)) {
-      context.response.body = users.get(id);
+    const user = userService.getUserById(id);
+    if (user) {
+      context.response.body = user;
     } else {
       context.response.status = 404;
       context.response.body = "user not found";
@@ -35,34 +25,27 @@ router
       type: "json",
     });
     const value = await result.value;
-    value.id = users.size + 1;
-    users.set(value.id, value);
-    context.response.body = value;
+    const user = userService.addUser(value);
+    context.response.body = user;
   })
   .put("/user/:id", async (context) => {
     const id = Number(context.params.id);
-    if (!users.has(id)) {
-      context.response.status = 404;
-      context.response.body = "user not found";
-      return;
-    }
     const result = context.request.body({
       type: "json",
     });
     const value = await result.value;
-    const user = users.get(id);
-    user!.age = value.age;
-    context.response.body = "update ok";
+    try {
+      userService.updateUser(id, value);
+      context.response.body = "update ok";
+    } catch (e) {
+      context.response.status = 400;
+      context.response.body = e.message;
+    }
   })
   .delete("/user/:id", (context) => {
     const id = Number(context.params.id);
-    if (users.has(id)) {
-      users.delete(id);
-      context.response.body = "delete ok";
-    } else {
-      context.response.status = 404;
-      context.response.body = "user not found";
-    }
+    userService.removeUser(id);
+    context.response.body = "delete ok";
   });
 
 const app = new Application();
