@@ -8,5 +8,4 @@ scripts:
       - read
       - write
 watcher:
-  exts: ["js", "jsx", "ts", "tsx"]
-    
+  skip: ["*/.git/*", "*/data/*"]

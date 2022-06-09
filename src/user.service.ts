@@ -5,6 +5,9 @@ interface User {
 }
 
 class UserService {
+  constructor() {
+    Deno.mkdir("data").catch(() => null);
+  }
   users: User[] = [
     { id: 1, author: "张三", age: 18 },
   ];
@@ -24,7 +27,10 @@ class UserService {
   }
 
   saveToFile(users: User[]) {
-    return Deno.writeTextFile("data/user.json", JSON.stringify(users, null, 2));
+    return Deno.writeTextFile(
+      "data/user.json",
+      JSON.stringify(users, null, 2),
+    );
   }
 
   async addUser(user: Omit<User, "id">) {
