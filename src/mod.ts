@@ -7,7 +7,7 @@ app.use((ctx) => {
 });
 
 app.addEventListener("listen", ({ port }) => {
-  console.log(`Listening on: "http://localhost:${port}`);
+  console.log(`Listening on: http://localhost:${port}`);
 });
 
 await app.listen({ port: 8000 });
