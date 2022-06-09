@@ -38,6 +38,31 @@ router
     value.id = users.size + 1;
     users.set(value.id, value);
     context.response.body = value;
+  })
+  .put("/user/:id", async (context) => {
+    const id = Number(context.params.id);
+    if (!users.has(id)) {
+      context.response.status = 404;
+      context.response.body = "user not found";
+      return;
+    }
+    const result = context.request.body({
+      type: "json",
+    });
+    const value = await result.value;
+    const user = users.get(id);
+    user!.age = value.age;
+    context.response.body = "update ok";
+  })
+  .delete("/user/:id", (context) => {
+    const id = Number(context.params.id);
+    if (users.has(id)) {
+      users.delete(id);
+      context.response.body = "delete ok";
+    } else {
+      context.response.status = 404;
+      context.response.body = "user not found";
+    }
   });
 
 const app = new Application();
