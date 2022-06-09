@@ -1,0 +1,7 @@
+version: 0.0.0
+name: deno_blog
+scripts:
+  dev:
+    cmd: "deno run mod.ts"
+    allow:
+      - net
