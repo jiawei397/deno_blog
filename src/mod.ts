@@ -7,12 +7,12 @@ router
   .get("/", (context) => {
     context.response.body = "hello world";
   })
-  .get("/user", (context) => {
-    context.response.body = userService.getAll();
+  .get("/user", async (context) => {
+    context.response.body = await userService.getAll();
   })
-  .get("/user/:id", (context) => {
+  .get("/user/:id", async (context) => {
     const id = Number(context.params.id);
-    const user = userService.getUserById(id);
+    const user = await userService.getUserById(id);
     if (user) {
       context.response.body = user;
     } else {
@@ -25,7 +25,7 @@ router
       type: "json",
     });
     const value = await result.value;
-    const user = userService.addUser(value);
+    const user = await userService.addUser(value);
     context.response.body = user;
   })
   .put("/user/:id", async (context) => {
@@ -35,7 +35,7 @@ router
     });
     const value = await result.value;
     try {
-      userService.updateUser(id, value);
+      await userService.updateUser(id, value);
       context.response.body = "update ok";
     } catch (e) {
       context.response.status = 400;

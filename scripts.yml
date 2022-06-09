@@ -5,3 +5,8 @@ scripts:
     cmd: "deno run src/mod.ts"
     allow:
       - net
+      - read
+      - write
+watcher:
+  exts: ["js", "jsx", "ts", "tsx"]
+    
