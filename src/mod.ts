@@ -6,11 +6,12 @@ interface User {
   age: number;
 }
 const users = new Map<number, User>();
-users.set(1, {
+const user1: User = {
   id: 1,
   author: "张三",
   age: 18,
-});
+};
+users.set(user1.id, user1);
 
 const router = new Router();
 router
@@ -20,15 +21,6 @@ router
   .get("/users", (context) => {
     context.response.body = Array.from(users.values());
   })
-  .post("/user", async (context) => {
-    const result = context.request.body({
-      type: "json",
-    });
-    const value = await result.value;
-    value.id = users.size + 1;
-    users.set(value.id, value);
-    context.response.body = value;
-  })
   .get("/user/:id", (context) => {
     const id = Number(context.params.id);
     if (users.has(id)) {
@@ -37,6 +29,15 @@ router
       context.response.status = 404;
       context.response.body = "user not found";
     }
+  })
+  .post("/user", async (context) => {
+    const result = context.request.body({
+      type: "json",
+    });
+    const value = await result.value;
+    value.id = users.size + 1;
+    users.set(value.id, value);
+    context.response.body = value;
   });
 
 const app = new Application();
