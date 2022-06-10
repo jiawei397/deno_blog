@@ -5,11 +5,22 @@ interface User {
   age: number;
 }
 
+function getData<T = string>(key: string) {
+  const str = localStorage.getItem(key);
+  if (str) {
+    return JSON.parse(str) as T;
+  }
+  return null;
+}
+
+function setData(key: string, val: unknown) {
+  localStorage.setItem(key, JSON.stringify(val));
+}
+
 class UserService {
   async getAll(): Promise<User[]> {
-    const userIdsStr = localStorage.getItem("users_ids");
-    if (userIdsStr) {
-      const ids: string[] = JSON.parse(userIdsStr);
+    const ids = getData<string[]>("users_ids");
+    if (ids) {
       const users = await Promise.all(
         ids.map((id) => this.getUserById(parseInt(id))),
       );
@@ -18,21 +29,17 @@ class UserService {
     return [];
   }
   async getUserById(id: number): Promise<User | null> {
-    const userStr = localStorage.getItem(`users_${id}`);
-    if (userStr) {
-      return JSON.parse(userStr) as User;
-    }
-    return null;
+    return getData<User>(`users_${id}`);
   }
 
   generateId(): number {
-    const idStr = localStorage.getItem("users_id");
+    const idStr = getData("users_id");
     if (idStr) {
       const id = parseInt(idStr, 10) + 1;
-      localStorage.setItem("users_id", id.toString()); // 取一次就得改一次
+      setData("users_id", id); // 取一次就得改一次
       return id;
     } else {
-      localStorage.setItem("users_id", "1");
+      setData("users_id", 1);
       return 1;
     }
   }
@@ -43,24 +50,22 @@ class UserService {
       ...user,
       id,
     };
-    const userIdsStr = localStorage.getItem("users_ids");
-    const userIds = userIdsStr ? JSON.parse(userIdsStr) : [];
+    const userIds = getData<number[]>("users_ids") || [];
     userIds.push(id);
-    localStorage.setItem(`users_${id}`, JSON.stringify(newUser));
-    localStorage.setItem("users_ids", JSON.stringify(userIds));
+    setData(`users_${id}`, newUser);
+    setData("users_ids", userIds);
     return newUser;
   }
 
   async removeUser(id: number) {
-    const userIdsStr = localStorage.getItem("users_ids");
-    if (!userIdsStr) {
+    const userIds = getData<number[]>("users_ids");
+    if (!userIds) {
       return;
     }
-    const userIds = JSON.parse(userIdsStr);
     const index = userIds.indexOf(id);
     if (index > -1) {
       userIds.splice(index, 1);
-      localStorage.setItem("users_ids", JSON.stringify(userIds));
+      setData("users_ids", userIds);
     }
   }
 
@@ -70,7 +75,7 @@ class UserService {
       return;
     }
     Object.assign(oldUser, user);
-    localStorage.setItem(`users_${id}`, JSON.stringify(oldUser));
+    setData(`users_${id}`, oldUser);
   }
 }
 
