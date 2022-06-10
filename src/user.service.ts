@@ -1,3 +1,4 @@
+// deno-lint-ignore-file require-await
 interface User {
   id: number;
   author: string;
@@ -5,17 +6,12 @@ interface User {
 }
 
 class UserService {
-  constructor() {
-    Deno.mkdir("data").catch(() => null);
-  }
   users: User[] = [
     { id: 1, author: "张三", age: 18 },
   ];
 
   async getAll(): Promise<User[]> {
-    const usersStr = await Deno.readTextFile("data/user.json").catch(() =>
-      null
-    );
+    const usersStr = localStorage.getItem("users");
     if (usersStr) {
       return JSON.parse(usersStr);
     }
@@ -26,11 +22,8 @@ class UserService {
     return users.find((user) => user.id === id);
   }
 
-  saveToFile(users: User[]) {
-    return Deno.writeTextFile(
-      "data/user.json",
-      JSON.stringify(users, null, 2),
-    );
+  private saveToFile(users: User[]) {
+    localStorage.setItem("users", JSON.stringify(users));
   }
 
   async addUser(user: Omit<User, "id">) {
