@@ -6,52 +6,71 @@ interface User {
 }
 
 class UserService {
-  users: User[] = [
-    { id: 1, author: "张三", age: 18 },
-  ];
-
   async getAll(): Promise<User[]> {
-    const usersStr = localStorage.getItem("users");
-    if (usersStr) {
-      return JSON.parse(usersStr);
+    const userIdsStr = localStorage.getItem("users_ids");
+    if (userIdsStr) {
+      const ids: string[] = JSON.parse(userIdsStr);
+      const users = await Promise.all(
+        ids.map((id) => this.getUserById(parseInt(id))),
+      );
+      return users.filter(Boolean) as User[];
     }
-    return this.users;
+    return [];
   }
-  async getUserById(id: number) {
-    const users = await this.getAll();
-    return users.find((user) => user.id === id);
+  async getUserById(id: number): Promise<User | null> {
+    const userStr = localStorage.getItem(`users_${id}`);
+    if (userStr) {
+      return JSON.parse(userStr) as User;
+    }
+    return null;
   }
 
-  private saveToFile(users: User[]) {
-    localStorage.setItem("users", JSON.stringify(users));
+  generateId(): number {
+    const idStr = localStorage.getItem("users_id");
+    if (idStr) {
+      const id = parseInt(idStr, 10) + 1;
+      localStorage.setItem("users_id", id.toString()); // 取一次就得改一次
+      return id;
+    } else {
+      localStorage.setItem("users_id", "1");
+      return 1;
+    }
   }
 
   async addUser(user: Omit<User, "id">) {
-    const users = await this.getAll();
-    const id = users.length + 1;
+    const id = this.generateId();
     const newUser = {
       ...user,
       id,
     };
-    users.push(newUser);
-    await this.saveToFile(users);
+    const userIdsStr = localStorage.getItem("users_ids");
+    const userIds = userIdsStr ? JSON.parse(userIdsStr) : [];
+    userIds.push(id);
+    localStorage.setItem(`users_${id}`, JSON.stringify(newUser));
+    localStorage.setItem("users_ids", JSON.stringify(userIds));
     return newUser;
   }
 
   async removeUser(id: number) {
-    const users = await this.getAll();
-    const newUsers = users.filter((user) => user.id !== id);
-    await this.saveToFile(newUsers);
+    const userIdsStr = localStorage.getItem("users_ids");
+    if (!userIdsStr) {
+      return;
+    }
+    const userIds = JSON.parse(userIdsStr);
+    const index = userIds.indexOf(id);
+    if (index > -1) {
+      userIds.splice(index, 1);
+      localStorage.setItem("users_ids", JSON.stringify(userIds));
+    }
   }
 
   async updateUser(id: number, user: Omit<User, "id">) {
-    const users = await this.getAll();
-    const oldUser = users.find((u) => u.id === id);
+    const oldUser = await this.getUserById(id);
     if (!oldUser) {
-      throw new Error(`user not found`);
+      return;
     }
     Object.assign(oldUser, user);
-    await this.saveToFile(users);
+    localStorage.setItem(`users_${id}`, JSON.stringify(oldUser));
   }
 }
 
