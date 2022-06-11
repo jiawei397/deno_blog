@@ -31,19 +31,10 @@ export class Model<T> {
     const ids = this.getAllIds();
     ids.push(id);
     setData(`${this.name}_ids`, ids);
+    return ids.length;
   }
 
-  private removeFromIds(id: string) {
-    const ids = this.getAllIds();
-    const index = ids.indexOf(id);
-    if (index > -1) {
-      ids.splice(index, 1);
-      setData(`${this.name}_ids`, ids);
-    } else {
-      console.warn(`${id} not found in ${this.name}_ids`);
-    }
-  }
-
+  /** 增加一个文档 */
   async insertOne(doc: Omit<T, "id">): Promise<string> {
     const id = nanoid();
     setData(id, { ...doc, id });
@@ -51,6 +42,7 @@ export class Model<T> {
     return id;
   }
 
+  /** 查找所有 */
   async findAll(): Promise<T[]> {
     const docs = await Promise.all(
       this.getAllIds().map((id) => this.findById(id)),
@@ -58,10 +50,12 @@ export class Model<T> {
     return docs.filter(Boolean) as T[];
   }
 
+  /** 根据id查找文档 */
   async findById(id: string): Promise<T | null> {
     return getData<T>(id);
   }
 
+  /** 根据id更新文档 */
   async findByIdAndUpdate(
     id: string,
     doc: Partial<Omit<T, "id">>,
@@ -75,13 +69,17 @@ export class Model<T> {
     return { modifiedCount };
   }
 
+  /** 根据id删除文档 */
   async findByIdAndDelete(id: string): Promise<number> {
-    const count = 0;
-    const oldDoc = await this.findById(id);
-    if (oldDoc) {
-      localStorage.removeItem(id);
-      this.removeFromIds(id);
+    const ids = this.getAllIds();
+    const index = ids.indexOf(id);
+    if (index > -1) {
+      ids.splice(index, 1);
+      setData(`${this.name}_ids`, ids);
+      return 1;
+    } else {
+      console.warn(`${id} not found in ${this.name}_ids`);
+      return 0;
     }
-    return count;
   }
 }
