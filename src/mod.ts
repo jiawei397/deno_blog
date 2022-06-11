@@ -24,4 +24,9 @@ addEventListener("error", (evt) => {
   console.error(`global`, evt.error);
 });
 
+// addEventListener("rejectionhandled", (evt) => {
+//   evt.preventDefault();
+//   console.error(`rejectionhandled`, evt);
+// });
+
 await app.listen({ port: 8000 });
