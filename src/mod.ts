@@ -11,7 +11,7 @@ router
     context.response.body = await userService.getAll();
   })
   .get("/user/:id", async (context) => {
-    const id = Number(context.params.id);
+    const id = context.params.id;
     const user = await userService.getUserById(id);
     if (user) {
       context.response.body = user;
@@ -29,7 +29,7 @@ router
     context.response.body = user;
   })
   .put("/user/:id", async (context) => {
-    const id = Number(context.params.id);
+    const id = context.params.id;
     const result = context.request.body({
       type: "json",
     });
@@ -43,7 +43,7 @@ router
     }
   })
   .delete("/user/:id", (context) => {
-    const id = Number(context.params.id);
+    const id = context.params.id;
     userService.removeUser(id);
     context.response.body = "delete ok";
   });
