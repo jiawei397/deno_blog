@@ -1,5 +1,5 @@
 // deno-lint-ignore-file require-await
-import { Model } from "./model.ts";
+import { Model } from "../model.ts";
 
 export interface User {
   id: string;

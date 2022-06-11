@@ -1,5 +1,5 @@
 // deno-lint-ignore-file require-await
-import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
+import { nanoid } from "../deps.ts";
 
 function getData<T = string>(key: string) {
   const str = localStorage.getItem(key);
