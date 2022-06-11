@@ -36,6 +36,6 @@ userRouter
   })
   .delete("/:id", async (context) => {
     const id = context.params.id;
-    const num = await userService.removeUser(id);
-    context.response.body = num;
+    const deletedCount = await userService.removeUser(id);
+    context.response.body = deletedCount;
   });
