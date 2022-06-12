@@ -4,6 +4,15 @@ import { userService } from "./user.service.ts";
 
 export const userRouter = new Router();
 
+interface RuleItem {
+  validate: (value: any) => boolean;
+  message: string;
+}
+
+type UserKey = keyof CreateUserDto;
+
+type Rule = { [key in UserKey]: RuleItem[] };
+
 userRouter
   .get("/", async (context) => {
     context.response.body = await userService.getAll();
@@ -23,26 +32,43 @@ userRouter
       type: "json",
     });
     const value: CreateUserDto = await result.value;
-    if (!value.age) {
+    const rules: Rule = {
+      age: [
+        {
+          validate: (value: unknown) => (value !== undefined || value !== null),
+          message: "age is required",
+        },
+        {
+          validate: (value: unknown) => typeof value === "number",
+          message: "age must be number",
+        },
+        {
+          validate: (value: number) => typeof value === "number" && value >= 0,
+          message: "age must be greater than or equal to 0",
+        },
+      ],
+      author: [{
+        validate: (value: unknown) => !!value,
+        message: "author is required",
+      }],
+    };
+
+    const errors: string[] = [];
+    Object.keys(rules).forEach((key) => {
+      const rule: RuleItem[] = rules[key as UserKey];
+      rule.forEach((item: RuleItem) => {
+        if (!item.validate(value[key as UserKey])) {
+          errors.push(item.message);
+        }
+      });
+    });
+
+    if (errors.length > 0) {
       context.response.status = 400;
-      context.response.body = "age is required";
+      context.response.body = errors.join(",");
       return;
     }
-    if (typeof value.age !== "number") {
-      context.response.status = 400;
-      context.response.body = "age must be a number";
-      return;
-    }
-    if (value.age < 0) {
-      context.response.status = 400;
-      context.response.body = "age must be greater than 0";
-      return;
-    }
-    if (!value.author) {
-      context.response.status = 400;
-      context.response.body = "author is required";
-      return;
-    }
+
     const id = await userService.addUser(value);
     context.response.body = id;
   })
