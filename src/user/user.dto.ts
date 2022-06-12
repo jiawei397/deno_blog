@@ -1,3 +1,4 @@
-export interface CreateUser {
-  name: string;
+export interface CreateUserDto {
+  author: string;
+  age: number;
 }

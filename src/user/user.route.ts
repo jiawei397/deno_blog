@@ -1,4 +1,5 @@
 import { Router } from "../../deps.ts";
+import { CreateUserDto } from "./user.dto.ts";
 import { userService } from "./user.service.ts";
 
 export const userRouter = new Router();
@@ -21,7 +22,27 @@ userRouter
     const result = context.request.body({
       type: "json",
     });
-    const value = await result.value;
+    const value: CreateUserDto = await result.value;
+    if (!value.age) {
+      context.response.status = 400;
+      context.response.body = "age is required";
+      return;
+    }
+    if (typeof value.age !== "number") {
+      context.response.status = 400;
+      context.response.body = "age must be a number";
+      return;
+    }
+    if (value.age < 0) {
+      context.response.status = 400;
+      context.response.body = "age must be greater than 0";
+      return;
+    }
+    if (!value.author) {
+      context.response.status = 400;
+      context.response.body = "author is required";
+      return;
+    }
     const id = await userService.addUser(value);
     context.response.body = id;
   })
