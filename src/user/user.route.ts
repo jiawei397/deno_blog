@@ -1,17 +1,9 @@
 import { Router } from "../../deps.ts";
+import { validateParams } from "../utils.ts";
 import { CreateUserDto } from "./user.dto.ts";
 import { userService } from "./user.service.ts";
 
 export const userRouter = new Router();
-
-interface RuleItem {
-  validate: (value: any) => boolean;
-  message: string;
-}
-
-type UserKey = keyof CreateUserDto;
-
-type Rule = { [key in UserKey]: RuleItem[] };
 
 userRouter
   .get("/", async (context) => {
@@ -32,37 +24,8 @@ userRouter
       type: "json",
     });
     const value: CreateUserDto = await result.value;
-    const rules: Rule = {
-      age: [
-        {
-          validate: (value: unknown) => (value !== undefined || value !== null),
-          message: "age is required",
-        },
-        {
-          validate: (value: unknown) => typeof value === "number",
-          message: "age must be number",
-        },
-        {
-          validate: (value: number) => typeof value === "number" && value >= 0,
-          message: "age must be greater than or equal to 0",
-        },
-      ],
-      author: [{
-        validate: (value: unknown) => !!value,
-        message: "author is required",
-      }],
-    };
 
-    const errors: string[] = [];
-    Object.keys(rules).forEach((key) => {
-      const rule: RuleItem[] = rules[key as UserKey];
-      rule.forEach((item: RuleItem) => {
-        if (!item.validate(value[key as UserKey])) {
-          errors.push(item.message);
-        }
-      });
-    });
-
+    const errors = await validateParams(CreateUserDto, value);
     if (errors.length > 0) {
       context.response.status = 400;
       context.response.body = errors.join(",");
