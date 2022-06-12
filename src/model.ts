@@ -1,5 +1,6 @@
 // deno-lint-ignore-file require-await
 import { nanoid } from "../deps.ts";
+import { Constructor, getSchemaMetadata } from "./schema.ts";
 
 function getData<T = string>(key: string) {
   const str = localStorage.getItem(key);
@@ -13,10 +14,12 @@ function setData(key: string, val: unknown) {
   localStorage.setItem(key, JSON.stringify(val));
 }
 
-export class Model<T> {
+export class Model<T, U = T & { id: string }> {
   name: string;
-  constructor(name: string) {
+  schema: Constructor | undefined;
+  constructor(name: string, schema?: Constructor) {
     this.name = name;
+    this.schema = schema;
   }
 
   private getAllIds(): string[] {
@@ -35,30 +38,39 @@ export class Model<T> {
   }
 
   /** 增加一个文档 */
-  async insertOne(doc: Omit<T, "id">): Promise<string> {
+  async insertOne(doc: T): Promise<string> {
     const id = nanoid();
-    setData(id, { ...doc, id });
+    const newdoc = { id, ...doc };
+    if (this.schema) {
+      const meta = getSchemaMetadata(this.schema);
+      Object.keys(newdoc).forEach((key) => {
+        if (!meta[key] && key !== "id") {
+          Reflect.deleteProperty(newdoc, key);
+        }
+      });
+    }
+    setData(id, newdoc);
     this.addToIds(id);
     return id;
   }
 
   /** 查找所有 */
-  async findAll(): Promise<T[]> {
+  async findAll(): Promise<U[]> {
     const docs = await Promise.all(
       this.getAllIds().map((id) => this.findById(id)),
     );
-    return docs.filter(Boolean) as T[];
+    return docs.filter(Boolean) as U[];
   }
 
   /** 根据id查找文档 */
-  async findById(id: string): Promise<T | null> {
-    return getData<T>(id);
+  async findById(id: string): Promise<U | null> {
+    return getData<U>(id);
   }
 
   /** 根据id更新文档 */
   async findByIdAndUpdate(
     id: string,
-    doc: Partial<Omit<T, "id">>,
+    doc: Partial<T>,
   ): Promise<{ modifiedCount: number }> {
     const oldDoc = await this.findById(id);
     const modifiedCount = 0;

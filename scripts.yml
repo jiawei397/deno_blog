@@ -7,5 +7,6 @@ scripts:
       - net
       - read
       - write
+    config: deno.jsonc
 watcher:
   skip: ["*/.git/*", "*/data/*"]
