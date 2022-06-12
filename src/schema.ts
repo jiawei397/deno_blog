@@ -8,9 +8,16 @@ export type Target = Constructor & {
 
 const PROP_META_KEY = Symbol("design:prop");
 
-export function Prop() {
+export interface SchemaType {
+  /**
+   * Adds a required validator to this SchemaType
+   */
+  required?: boolean | [required: boolean, errorMsg: string];
+}
+
+export function Prop(props: SchemaType = {}) {
   return function (target: TargetInstance, propertyKey: string) {
-    addSchemaMetadata(target, propertyKey, {});
+    addSchemaMetadata(target, propertyKey, props);
     return target;
   };
 }
