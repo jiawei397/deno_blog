@@ -2,6 +2,7 @@
   "imports": {
     "@/": "./src/",
     "deno_class_validator": "https://deno.land/x/deno_class_validator@v1.0.0/mod.ts",
+    "date_file_log": "https://deno.land/x/date_file_log@v0.2.6/mod.ts",
     "deno_reflect": "https://deno.land/x/deno_reflect@v0.1.13/mod.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
     "oak_exception": "https://deno.land/x/oak_exception@v0.0.9/mod.ts",

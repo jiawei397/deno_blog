@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Reflect } from "deno_reflect";
+import { Reflect } from "oak_nest";
 export type TargetInstance = any;
 export type Constructor = new (...args: any[]) => any;
 export type Target = Constructor & {

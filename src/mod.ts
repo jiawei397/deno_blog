@@ -1,18 +1,18 @@
 import { NestFactory } from "oak_nest";
 import { AppModule } from "./app.module.ts";
 import globals from "./globals.ts";
+import { anyExceptionFilter } from "oak_exception";
+import { logger } from "./tools/log.ts";
 
 const app = await NestFactory.create(AppModule);
 // app.setGlobalPrefix("/api/");
 
-app.use(async (context, next) => {
-  try {
-    await next();
-  } catch (error) {
-    context.response.status = error.status || 500;
-    context.response.body = error.message;
-  }
-});
+app.use(anyExceptionFilter({
+  logger,
+  isHeaderResponseTime: true,
+  isDisableFormat404: false,
+  isLogCompleteError: true,
+}));
 
 app.use(app.routes());
 

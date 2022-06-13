@@ -1,7 +1,9 @@
 import { readYaml } from "./tools/utils.ts";
+import { DateFileLogConfig } from "date_file_log";
 
 export interface Config {
   port: number;
+  log: DateFileLogConfig;
 }
 
 const config = await readYaml<Config>("config/server.yaml");
