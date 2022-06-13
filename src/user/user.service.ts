@@ -1,8 +1,10 @@
 // deno-lint-ignore-file require-await
+import { Injectable } from "oak_nest";
 import { Model } from "../model.ts";
 import { User } from "./user.schema.ts";
 
-class UserService {
+@Injectable()
+export class UserService {
   userModel: Model<User>;
   constructor() {
     this.userModel = new Model("users", User);
@@ -27,5 +29,3 @@ class UserService {
     return this.userModel.findByIdAndUpdate(id, user);
   }
 }
-
-export const userService = new UserService();

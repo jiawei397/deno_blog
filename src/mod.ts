@@ -1,7 +1,7 @@
-import { Application } from "../deps.ts";
-import { router } from "./routes.ts";
+import { NestFactory } from "oak_nest";
+import { AppModule } from "./app.module.ts";
 
-const app = new Application();
+const app = await NestFactory.create(AppModule);
 
 app.use(async (context, next) => {
   try {
@@ -12,8 +12,7 @@ app.use(async (context, next) => {
   }
 });
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+app.use(app.routes());
 
 app.addEventListener("listen", ({ port }) => {
   console.log(`Listening on: http://localhost:${port}`);

@@ -8,5 +8,6 @@ scripts:
       - read
       - write
     config: deno.jsonc
+    importMap: import_map.json
 watcher:
   skip: ["*/.git/*", "*/data/*"]

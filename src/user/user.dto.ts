@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Min } from "../../deps.ts";
+import { IsNumber, IsOptional, IsString, Min } from "deno_class_validator";
 
 export class CreateUserDto {
   @IsString()
@@ -7,4 +7,15 @@ export class CreateUserDto {
   @IsNumber()
   @Min(0)
   age: number;
+}
+
+export class UpdateUserDto {
+  @IsString()
+  @IsOptional()
+  author?: string;
+
+  @IsNumber()
+  @Min(0)
+  @IsOptional()
+  age?: number;
 }

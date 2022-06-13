@@ -1,5 +1,5 @@
 // deno-lint-ignore-file require-await
-import { nanoid } from "../deps.ts";
+import { nanoid } from "nanoid";
 import { Constructor, getSchemaMetadata } from "./schema.ts";
 
 function getData<T = string>(key: string) {
