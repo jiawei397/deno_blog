@@ -1,5 +1,6 @@
 import { NestFactory } from "oak_nest";
 import { AppModule } from "./app.module.ts";
+import globals from "./globals.ts";
 
 const app = await NestFactory.create(AppModule);
 
@@ -28,4 +29,4 @@ addEventListener("error", (evt) => {
 //   console.error(`rejectionhandled`, evt);
 // });
 
-await app.listen({ port: 8000 });
+await app.listen({ port: globals.port });
