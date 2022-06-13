@@ -1,14 +1,11 @@
 // deno-lint-ignore-file require-await
 import { Injectable } from "oak_nest";
-import { Model } from "../model.ts";
+import { InjectModel, Model } from "../model.ts";
 import { User } from "./user.schema.ts";
 
 @Injectable()
 export class UserService {
-  userModel: Model<User>;
-  constructor() {
-    this.userModel = new Model("users", User);
-  }
+  constructor(@InjectModel(User) private readonly userModel: Model<User>) {}
 
   async getAll() {
     return this.userModel.findAll();

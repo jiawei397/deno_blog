@@ -1,6 +1,12 @@
 // deno-lint-ignore-file require-await
 import { nanoid } from "nanoid";
 import { Constructor, getSchemaMetadata } from "./schema.ts";
+import { Inject } from "oak_nest";
+
+export const InjectModel = (Cls: Constructor) =>
+  Inject(() => {
+    return new Model(Cls.name.toLowerCase(), Cls);
+  });
 
 function getData<T = string>(key: string) {
   const str = localStorage.getItem(key);
