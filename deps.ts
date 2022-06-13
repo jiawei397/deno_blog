@@ -6,6 +6,7 @@ export { Reflect } from "https://deno.land/x/deno_reflect@v0.1.13/mod.ts";
 
 export {
   IsNumber,
+  IsOptional,
   IsString,
   Min,
   validate,
