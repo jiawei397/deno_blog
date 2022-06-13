@@ -3,6 +3,7 @@ import { AppModule } from "./app.module.ts";
 import globals from "./globals.ts";
 
 const app = await NestFactory.create(AppModule);
+// app.setGlobalPrefix("/api/");
 
 app.use(async (context, next) => {
   try {
