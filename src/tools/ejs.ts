@@ -8,6 +8,9 @@ export function render(
 ): Promise<string> {
   return renderFile("views/" + path + ".ejs", {
     ...globals.meta,
+    user: null,
+    success: null,
+    error: null,
     ...data,
   });
 }

@@ -7,6 +7,10 @@ import { logger } from "./tools/log.ts";
 const app = await NestFactory.create(AppModule);
 // app.setGlobalPrefix("/api/");
 
+app.useStaticAssets("./public", {
+  prefix: "static",
+});
+
 app.use(anyExceptionFilter({
   logger,
   isHeaderResponseTime: true,
