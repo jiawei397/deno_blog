@@ -3,6 +3,10 @@ import { DateFileLogConfig } from "date_file_log";
 
 export interface Config {
   port: number;
+  meta: {
+    title: string;
+    description: string;
+  };
   log: DateFileLogConfig;
 }
 

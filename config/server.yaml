@@ -1,4 +1,7 @@
 port: 8000
+meta:
+  title: Deno Blog
+  description: Deno Blog is a simple blog written in Deno.
 log:
   appenders:
     dateFile:
