@@ -6,15 +6,15 @@
             <form class="ui form segment" method="post" enctype="multipart/form-data" action="/signup">
                 <div class="field required">
                     <label>用户名</label>
-                    <input placeholder="用户名" type="text" name="name" required>
+                    <input placeholder="用户名" type="text" name="name" minlength="1" maxlength="10" required>
                 </div>
                 <div class="field required">
                     <label>密码</label>
-                    <input placeholder="密码" type="password" name="password" required>
+                    <input placeholder="密码" type="password" name="password" minlength="6" maxlength="20" required>
                 </div>
                 <div class="field required">
                     <label>重复密码</label>
-                    <input placeholder="重复密码" type="password" name="repassword" required>
+                    <input placeholder="重复密码" type="password" name="repassword" minlength="6" maxlength="20" required>
                 </div>
                 <div class="field required">
                     <label>性别</label>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="field required">
                     <label>个人简介</label>
-                    <textarea name="bio" rows="5" required></textarea>
+                    <textarea name="bio" rows="5" required minlength="1" maxlength="30"></textarea>
                 </div>
                 <input type="submit" class="ui button fluid" value="注册">
             </form>

@@ -1,12 +1,37 @@
-import { IsNumber, IsOptional, IsString, Min } from "deno_class_validator";
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+  MinLength,
+} from "deno_class_validator";
+import { Gender } from "./user.schema.ts";
 
 export class CreateUserDto {
   @IsString()
-  author: string;
+  @MinLength(1)
+  @MaxLength(10)
+  name: string;
 
-  @IsNumber()
-  @Min(0)
-  age: number;
+  @IsString()
+  @MinLength(6)
+  @MaxLength(20)
+  password: string;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(20)
+  repassword: string;
+
+  @IsEnum(Gender)
+  gender: Gender;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(30)
+  bio: string;
 }
 
 export class UpdateUserDto {
