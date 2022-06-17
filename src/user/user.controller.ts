@@ -12,8 +12,10 @@ import {
   Res,
   Response,
   UploadedFile,
+  UseGuards,
   validateParams,
 } from "oak_nest";
+import { LoginedGuard, SSOGuard } from "../guards/sso.guard.ts";
 import { Flash } from "../session/session.decorator.ts";
 import { SessionService } from "../session/session.service.ts";
 import { Render } from "../tools/ejs.ts";
@@ -30,11 +32,13 @@ export class UserController {
   ) {}
 
   @Get("/signup")
+  @UseGuards(LoginedGuard)
   signupPage(@Render() render: Render) {
     return render("signup", {});
   }
 
   @Post("signup")
+  @UseGuards(LoginedGuard)
   async signup(
     @UploadedFile() params: FormDataFormattedBody<CreateUserDto>,
     @Res() res: Response,
@@ -90,17 +94,20 @@ export class UserController {
   }
 
   @Get("user")
+  @UseGuards(SSOGuard)
   async getAllUsers() {
     return await this.userService.getAll();
   }
 
   @Get("signin")
+  @UseGuards(LoginedGuard)
   signinPage(@Render() render: Render) {
     return render("signin", {});
   }
 
   /** 登陆 */
   @Post("signin")
+  @UseGuards(LoginedGuard)
   async signin(
     @UploadedFile() params: FormDataFormattedBody<SigninDto>,
     @Res() res: Response,
@@ -138,6 +145,7 @@ export class UserController {
   }
 
   @Get("currentUserInfo")
+  @UseGuards(SSOGuard)
   currentUserInfo(context: Context) {
     const user = { ...context.state.locals?.user };
     delete user.password;
@@ -145,6 +153,7 @@ export class UserController {
   }
 
   @Get("user/:id")
+  @UseGuards(SSOGuard)
   async getUserById(@Params("id") id: string) {
     const user = await this.userService.getUserById(id);
     if (user) {
@@ -155,23 +164,21 @@ export class UserController {
   }
 
   @Delete("user/:id")
+  @UseGuards(SSOGuard)
   async deleteUser(@Params("id") id: string) {
     return await this.userService.removeUser(id);
   }
 
   @Get("signout")
-  async signout(@Res() res: Response, @Flash() flash: Flash, context: Context) {
-    const sessionId = context.state.locals?.sessionId;
-    if (sessionId) {
-      try {
-        await this.sessionService.deleteById(sessionId);
-      } catch (error) {
-        flash("error", error.message);
-        res.redirect(REDIRECT_BACK);
-        return;
-      }
-    }
+  @UseGuards(SSOGuard)
+  signout(@Res() res: Response, @Flash() flash: Flash) {
+    flash("userId", "");
     flash("success", "登出成功");
     res.redirect("posts");
+  }
+
+  @Get("sessions")
+  getSessions() {
+    return this.sessionService.findAll();
   }
 }
