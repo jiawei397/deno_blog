@@ -8,6 +8,8 @@ import { SessionMiddleware } from "./session/session.middleware.ts";
 const app = await NestFactory.create(AppModule);
 // app.setGlobalPrefix("/api/");
 
+// localStorage.clear();
+
 app.use(SessionMiddleware);
 
 app.useStaticAssets("./public", {
