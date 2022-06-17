@@ -13,5 +13,11 @@ export class Session {
   @Prop()
   error?: string;
 
+  @Prop({
+    expires: 60 * 60 * 24 * 7,
+    default: Date.now,
+  })
+  expired?: Date;
+
   user?: User | null;
 }

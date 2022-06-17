@@ -10,9 +10,24 @@ const PROP_META_KEY = Symbol("design:prop");
 
 export interface SchemaType {
   /**
-   * Adds a required validator to this SchemaType
+   * 是否必须的字段
    */
   required?: boolean | [required: boolean, errorMsg: string];
+
+  /**
+   * 默认值，可能是函数，也可以是具体值。其中如果是Date或Date.now，则是当前时间，相当于new Date()。
+   */
+  default?: any;
+
+  /**
+   * 过期时间，单位是秒。
+   */
+  expires?: number;
+
+  /**
+   * 全局唯一
+   */
+  unique?: boolean;
 }
 
 export function Prop(props: SchemaType = {}) {
