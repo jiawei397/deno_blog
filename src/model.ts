@@ -163,6 +163,11 @@ export class Model<T extends object, U = T & { id: string }> {
     const oldDoc = await this.findById(id);
     const modifiedCount = 0;
     if (oldDoc) {
+      for (const key in doc) {
+        if (doc[key] !== undefined) {
+          Reflect.deleteProperty(doc, key);
+        }
+      }
       Object.assign(oldDoc, doc);
       setData(id, oldDoc);
     }

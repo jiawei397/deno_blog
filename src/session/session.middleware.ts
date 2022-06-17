@@ -22,7 +22,12 @@ export async function SessionMiddleware(context: Context, next: Next) {
     };
   }
 
-  context.state.locals = session;
+  context.state.session = session;
+  context.state.locals = {
+    success: session.success,
+    error: session.error,
+    user: session.user,
+  };
   // console.log("session:", session);
   await next();
 

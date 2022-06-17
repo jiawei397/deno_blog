@@ -34,4 +34,8 @@ export class SessionService {
   deleteById(id: string) {
     return this.model.findByIdAndDelete(id);
   }
+
+  findAll(): Promise<Session[]> {
+    return this.model.findAll();
+  }
 }
