@@ -8,12 +8,14 @@ import {
   Get,
   Params,
   Post,
+  REDIRECT_BACK,
   Res,
   Response,
   UploadedFile,
   validateParams,
 } from "oak_nest";
 import { Flash } from "../session/session.decorator.ts";
+import { SessionService } from "../session/session.service.ts";
 import { Render } from "../tools/ejs.ts";
 import { Logger } from "../tools/log.ts";
 import { CreateUserDto, SigninDto } from "./user.dto.ts";
@@ -23,6 +25,7 @@ import { UserService } from "./user.service.ts";
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly sessionService: SessionService,
     private readonly logger: Logger,
   ) {}
 
@@ -76,7 +79,7 @@ export class UserController {
       //TODO 提示错误
       flash("error", e.message);
       this.logger.error(e.message);
-      res.redirect("/signup");
+      res.redirect(REDIRECT_BACK);
     }
   }
 
@@ -108,7 +111,7 @@ export class UserController {
       await validateParams(SigninDto, fields);
     } catch (error) {
       flash("error", error.message);
-      return res.redirect("signin");
+      return res.redirect(REDIRECT_BACK);
     }
     const username = fields.name;
     const user = await this.userService.findByName(username);
@@ -122,7 +125,7 @@ export class UserController {
     }
     if (error) {
       flash("error", error);
-      return res.redirect("signin");
+      return res.redirect(REDIRECT_BACK);
     }
 
     assert(user);
@@ -154,5 +157,21 @@ export class UserController {
   @Delete("user/:id")
   async deleteUser(@Params("id") id: string) {
     return await this.userService.removeUser(id);
+  }
+
+  @Get("signout")
+  async signout(@Res() res: Response, @Flash() flash: Flash, context: Context) {
+    const sessionId = context.state.locals?.sessionId;
+    if (sessionId) {
+      try {
+        await this.sessionService.deleteById(sessionId);
+      } catch (error) {
+        flash("error", error.message);
+        res.redirect(REDIRECT_BACK);
+        return;
+      }
+    }
+    flash("success", "登出成功");
+    res.redirect("posts");
   }
 }
