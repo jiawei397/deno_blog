@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from "oak_exception";
 import {
+  assert,
   Context,
   Controller,
   Delete,
@@ -15,7 +16,7 @@ import {
 import { Flash } from "../session/session.decorator.ts";
 import { Render } from "../tools/ejs.ts";
 import { Logger } from "../tools/log.ts";
-import { CreateUserDto } from "./user.dto.ts";
+import { CreateUserDto, SigninDto } from "./user.dto.ts";
 import { UserService } from "./user.service.ts";
 
 @Controller("/")
@@ -93,6 +94,44 @@ export class UserController {
   @Get("signin")
   signinPage(@Render() render: Render) {
     return render("signin", {});
+  }
+
+  /** 登陆 */
+  @Post("signin")
+  async signin(
+    @UploadedFile() params: FormDataFormattedBody<SigninDto>,
+    @Res() res: Response,
+    @Flash() flash: Flash,
+  ) {
+    const fields = params.fields;
+    try {
+      await validateParams(SigninDto, fields);
+    } catch (error) {
+      flash("error", error.message);
+      return res.redirect("signin");
+    }
+    const username = fields.name;
+    const user = await this.userService.findByName(username);
+    let error = "";
+    if (!user) {
+      this.logger.error(`用户名${username}不存在`);
+      error = "用户名或密码错误";
+    } else if (fields.password !== user.password) {
+      this.logger.error(`密码${fields.password}不匹配`);
+      error = "用户名或密码错误";
+    }
+    if (error) {
+      flash("error", error);
+      return res.redirect("signin");
+    }
+
+    assert(user);
+    flash("userId", user.id!);
+    flash("success", "登录成功");
+
+    this.logger.info(`用户${username}登陆成功`);
+    // 跳转到主页
+    res.redirect("posts");
   }
 
   @Get("currentUserInfo")

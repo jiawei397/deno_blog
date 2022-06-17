@@ -25,4 +25,8 @@ export class UserService {
   async updateUser(id: string, user: Partial<User>) {
     return this.userModel.findByIdAndUpdate(id, user);
   }
+
+  findByName(name: string) {
+    return this.userModel.findOne({ name });
+  }
 }

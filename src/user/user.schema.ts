@@ -7,7 +7,9 @@ export enum Gender {
 }
 
 export class User {
-  @Prop()
+  @Prop({
+    unique: true,
+  })
   name: string;
 
   @Prop()
