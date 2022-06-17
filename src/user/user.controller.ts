@@ -90,6 +90,11 @@ export class UserController {
     return await this.userService.getAll();
   }
 
+  @Get("signin")
+  signinPage(@Render() render: Render) {
+    return render("signin", {});
+  }
+
   @Get("currentUserInfo")
   currentUserInfo(context: Context) {
     const user = { ...context.state.locals?.user };
