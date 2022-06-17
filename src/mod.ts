@@ -3,9 +3,12 @@ import { AppModule } from "./app.module.ts";
 import globals from "./globals.ts";
 import { anyExceptionFilter } from "oak_exception";
 import { logger } from "./tools/log.ts";
+import { SessionMiddleware } from "./session/session.middleware.ts";
 
 const app = await NestFactory.create(AppModule);
 // app.setGlobalPrefix("/api/");
+
+app.use(SessionMiddleware);
 
 app.useStaticAssets("./public", {
   prefix: "static",

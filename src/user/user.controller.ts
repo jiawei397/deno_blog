@@ -1,5 +1,6 @@
 import { BadRequestException, NotFoundException } from "oak_exception";
 import {
+  Context,
   Controller,
   Delete,
   FormDataFormattedBody,
@@ -11,6 +12,7 @@ import {
   UploadedFile,
   validateParams,
 } from "oak_nest";
+import { Flash } from "../session/session.decorator.ts";
 import { Render } from "../tools/ejs.ts";
 import { Logger } from "../tools/log.ts";
 import { CreateUserDto } from "./user.dto.ts";
@@ -32,6 +34,7 @@ export class UserController {
   async signup(
     @UploadedFile() params: FormDataFormattedBody<CreateUserDto>,
     @Res() res: Response,
+    @Flash() flash: Flash,
   ) {
     try {
       const files = params.files;
@@ -65,9 +68,12 @@ export class UserController {
       this.logger.debug(`上传图片成功`);
 
       //TODO  提示注册成功
+      flash("success", "注册成功");
+      flash("userId", id);
       res.redirect("/posts");
     } catch (e) {
       //TODO 提示错误
+      flash("error", e.message);
       this.logger.error(e.message);
       res.redirect("/signup");
     }
@@ -82,6 +88,13 @@ export class UserController {
   @Get("user")
   async getAllUsers() {
     return await this.userService.getAll();
+  }
+
+  @Get("currentUserInfo")
+  currentUserInfo(context: Context) {
+    const user = { ...context.state.locals?.user };
+    delete user.password;
+    return user;
   }
 
   @Get("user/:id")
