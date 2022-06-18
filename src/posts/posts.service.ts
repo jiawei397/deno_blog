@@ -4,6 +4,8 @@ import { Logger } from "../tools/log.ts";
 import { UserService } from "../user/user.service.ts";
 import { CreatePostDto } from "./posts.dto.ts";
 import { Post } from "./posts.schema.ts";
+import { format } from "timeago";
+import { Marked } from "markdown";
 
 interface PopulateOptions {
   isWithUserInfo?: boolean;
@@ -19,9 +21,12 @@ export class PostsService {
   ) {}
 
   save(params: CreatePostDto): Promise<string> {
+    const now = new Date();
     return this.model.insertOne({
       ...params,
       pv: 0,
+      createTime: now,
+      updateTime: now,
     });
   }
 
@@ -39,6 +44,13 @@ export class PostsService {
         pv: post.pv + 1,
       }).catch(this.logger.error);
     }
+    this.format(post);
     return post;
+  }
+
+  private format(post: Post) {
+    post.createdAt = format(post.createTime, "zh_CN");
+    const html = Marked.parse(post.content).content;
+    post.contentHtml = html;
   }
 }

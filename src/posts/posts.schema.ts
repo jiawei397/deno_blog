@@ -22,5 +22,14 @@ export class Post {
   })
   pv: number;
 
+  @Prop()
+  createTime: Date;
+
+  @Prop()
+  updateTime: Date;
+
+  createdAt?: string;
+  contentHtml?: string;
+
   author?: UserInfo | null;
 }
