@@ -2,5 +2,11 @@
   "deno.suggest.imports.hosts": {
     "https://deno.land": true
   },
-  "deno.importMap": "./import_map.json"
+  "deno.importMap": "./import_map.json",
+  "emmet.includeLanguages": {
+    "ejs": "html",
+  },
+  "[html]": {
+    "editor.defaultFormatter": "j69.ejs-beautify"
+  },
 }
