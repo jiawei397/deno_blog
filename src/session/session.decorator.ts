@@ -13,3 +13,9 @@ export type Flash = (
   key: keyof CreateSession,
   val: string | boolean | number,
 ) => void;
+
+export const UserParam = createParamDecorator(
+  (context: Context) => {
+    return context.state.session?.user;
+  },
+);

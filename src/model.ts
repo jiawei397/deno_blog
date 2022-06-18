@@ -20,7 +20,9 @@ function setData(key: string, val: unknown) {
   localStorage.setItem(key, JSON.stringify(val));
 }
 
-export class Model<T extends object, U = T & { id: string }> {
+export type ModelWithId<T> = T & { id: string };
+
+export class Model<T extends object, U = ModelWithId<T>> {
   name: string;
   schema: Constructor | undefined;
   expiredKey: string;

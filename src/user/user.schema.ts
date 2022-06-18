@@ -1,3 +1,4 @@
+import { ModelWithId } from "../model.ts";
 import { Prop } from "../schema.ts";
 
 export enum Gender {
@@ -26,3 +27,5 @@ export class User {
   @Prop()
   bio: string;
 }
+
+export type UserInfo = ModelWithId<User>;
