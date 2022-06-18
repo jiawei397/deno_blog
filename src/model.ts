@@ -157,6 +157,11 @@ export class Model<T extends object, U = ModelWithId<T>> {
     return getData<U>(id);
   }
 
+  async findByIds(ids: string[]): Promise<U[]> {
+    const arr = await Promise.all(ids.map((id) => this.findById(id)));
+    return arr.filter(Boolean) as U[];
+  }
+
   /** 根据id更新文档 */
   async findByIdAndUpdate(
     id: string,

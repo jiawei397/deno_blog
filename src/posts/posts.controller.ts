@@ -24,7 +24,12 @@ export class PostsController {
 
   @Get("/")
   async getAll(@Render() render: Render) {
-    return await render("posts", {});
+    const posts = await this.postsService.findAll({
+      isWithUserInfo: true,
+    });
+    return await render("posts", {
+      posts,
+    });
   }
 
   @Get("/create")

@@ -14,6 +14,10 @@ export class UserService {
     return this.userModel.findById(id);
   }
 
+  async getUsersByIds(ids: string[]) {
+    return this.userModel.findByIds(ids);
+  }
+
   async addUser(user: User) {
     return this.userModel.insertOne(user);
   }

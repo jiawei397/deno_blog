@@ -53,4 +53,28 @@ export class PostsService {
     const html = Marked.parse(post.content).content;
     post.contentHtml = html;
   }
+
+  async findAll(options: PopulateOptions = {}) {
+    const posts = await this.model.findAll();
+    if (options.isWithUserInfo) {
+      const users = await this.userService.getUsersByIds(
+        posts.map((post) => post.userId),
+      );
+      posts.forEach((post) => {
+        post.author = users.find((user) => user.id === post.userId);
+      });
+    }
+    // 增加浏览次数
+    if (options.isIncrementPv) {
+      posts.forEach((post) => {
+        this.model.findByIdAndUpdate(post.id, {
+          pv: post.pv + 1,
+        }).catch(this.logger.error);
+      });
+    }
+    posts.forEach((post) => {
+      this.format(post);
+    });
+    return posts;
+  }
 }
