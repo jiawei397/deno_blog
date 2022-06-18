@@ -1,17 +1,9 @@
-import { Comment } from "../comments/comments.schema.ts";
 import { Prop } from "../schema.ts";
 import { UserInfo } from "../user/user.schema.ts";
 
-export class Post {
-  @Prop({
-    required: true,
-  })
+export class Comment {
+  @Prop()
   userId: string;
-
-  @Prop({
-    required: true,
-  })
-  title: string;
 
   @Prop({
     required: true,
@@ -21,7 +13,7 @@ export class Post {
   @Prop({
     required: true,
   })
-  pv: number;
+  postId: string;
 
   @Prop()
   createTime: Date;
@@ -33,5 +25,4 @@ export class Post {
   contentHtml?: string;
 
   author?: UserInfo | null;
-  comments?: Comment[] | null;
 }

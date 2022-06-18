@@ -6,9 +6,11 @@ import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
 import { Post } from "./posts.schema.ts";
 import { format } from "timeago";
 import { Marked } from "markdown";
+import { CommentsService } from "../comments/comments.service.ts";
 
 interface PopulateOptions {
   isWithUserInfo?: boolean;
+  isWithComments?: boolean;
   isIncrementPv?: boolean;
 }
 
@@ -17,6 +19,7 @@ export class PostsService {
   constructor(
     @InjectModel(Post) private readonly model: Model<Post>,
     private readonly userService: UserService,
+    private readonly commentsService: CommentsService,
     private readonly logger: Logger,
   ) {}
 
@@ -37,6 +40,9 @@ export class PostsService {
     }
     if (options.isWithUserInfo) {
       post.author = await this.userService.getUserById(post.userId);
+    }
+    if (options.isWithComments) {
+      post.comments = await this.commentsService.findByPostId(id);
     }
     // 增加浏览次数
     if (options.isIncrementPv) {

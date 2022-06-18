@@ -68,6 +68,7 @@ export class PostsController {
     const post = await this.postsService.findById(id, {
       isWithUserInfo: true,
       isIncrementPv: true,
+      isWithComments: true,
     });
     if (!post) {
       throw new NotFoundException(`未找到id为${id}的文章`);
