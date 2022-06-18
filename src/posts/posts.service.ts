@@ -1,5 +1,5 @@
 import { Injectable } from "oak_nest";
-import { InjectModel, Model } from "../model.ts";
+import { InjectModel, Model, ModelWithId } from "../model.ts";
 import { Logger } from "../tools/log.ts";
 import { UserService } from "../user/user.service.ts";
 import { CreatePostDto } from "./posts.dto.ts";
@@ -56,6 +56,14 @@ export class PostsService {
 
   async findAll(options: PopulateOptions = {}) {
     const posts = await this.model.findAll();
+    await this.formatPosts(posts, options);
+    return posts;
+  }
+
+  private async formatPosts(
+    posts: ModelWithId<Post>[],
+    options: PopulateOptions = {},
+  ) {
     if (options.isWithUserInfo) {
       const users = await this.userService.getUsersByIds(
         posts.map((post) => post.userId),
@@ -75,6 +83,13 @@ export class PostsService {
     posts.forEach((post) => {
       this.format(post);
     });
+  }
+
+  async findByUserId(userId: string, options: PopulateOptions = {}) {
+    const posts = await this.model.findMany({
+      userId,
+    });
+    await this.formatPosts(posts, options);
     return posts;
   }
 }

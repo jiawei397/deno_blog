@@ -5,6 +5,7 @@ import {
   Get,
   Params,
   Post,
+  Query,
   Res,
   Response,
   UseGuards,
@@ -23,13 +24,22 @@ export class PostsController {
   ) {}
 
   @Get("/")
-  async getAll(@Render() render: Render) {
-    const posts = await this.postsService.findAll({
-      isWithUserInfo: true,
-    });
-    return await render("posts", {
-      posts,
-    });
+  async getAll(@Query("userId") userId: string, @Render() render: Render) {
+    if (userId) {
+      const posts = await this.postsService.findByUserId(userId, {
+        isWithUserInfo: true,
+      });
+      return render("posts", {
+        posts,
+      });
+    } else {
+      const posts = await this.postsService.findAll({
+        isWithUserInfo: true,
+      });
+      return render("posts", {
+        posts,
+      });
+    }
   }
 
   @Get("/create")
