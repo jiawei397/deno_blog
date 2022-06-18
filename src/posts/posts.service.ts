@@ -2,7 +2,7 @@ import { Injectable } from "oak_nest";
 import { InjectModel, Model, ModelWithId } from "../model.ts";
 import { Logger } from "../tools/log.ts";
 import { UserService } from "../user/user.service.ts";
-import { CreatePostDto } from "./posts.dto.ts";
+import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
 import { Post } from "./posts.schema.ts";
 import { format } from "timeago";
 import { Marked } from "markdown";
@@ -97,5 +97,9 @@ export class PostsService {
     });
     await this.formatPosts(posts, options);
     return posts;
+  }
+
+  update(id: string, params: UpdatePostDto) {
+    return this.model.findByIdAndUpdate(id, params);
   }
 }

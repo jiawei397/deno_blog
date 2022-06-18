@@ -14,7 +14,7 @@ import { SSOGuard } from "../guards/sso.guard.ts";
 import { Flash, UserParam } from "../session/session.decorator.ts";
 import { Render } from "../tools/ejs.ts";
 import { UserInfo } from "../user/user.schema.ts";
-import { CreatePostDto } from "./posts.dto.ts";
+import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
 import { PostsService } from "./posts.service.ts";
 
 @Controller("/posts")
@@ -75,5 +75,28 @@ export class PostsController {
     return render("post", {
       post,
     });
+  }
+
+  @UseGuards(SSOGuard)
+  @Get("/:id/edit")
+  async editPage(@Params("id") id: string, @Render() render: Render) {
+    const post = await this.postsService.findById(id, {
+      isWithUserInfo: true,
+    });
+    return render("posts/edit", { post });
+  }
+
+  @Post("/:id/edit")
+  @UseGuards(SSOGuard)
+  async updatePost(
+    @Params("id") id: string,
+    @Form() params: UpdatePostDto,
+    @Res() res: Response,
+    @Flash() flash: Flash,
+  ) {
+    await this.postsService.update(id, params);
+    flash("success", "更新成功");
+    // 编辑成功后跳转到文章页面
+    res.redirect("/posts/" + id);
   }
 }
