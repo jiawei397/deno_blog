@@ -83,6 +83,12 @@ export class PostsService {
     posts.forEach((post) => {
       this.format(post);
     });
+    posts.sort((a, b) => {
+      if (a.createTime > b.createTime) {
+        return -1;
+      }
+      return 1;
+    });
   }
 
   async findByUserId(userId: string, options: PopulateOptions = {}) {
