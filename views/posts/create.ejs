@@ -13,11 +13,11 @@
     <form class="ui form segment" method="post" action="/posts">
       <div class="field required">
         <label>标题</label>
-        <input type="text" name="title">
+        <input type="text" name="title" required maxlength="100">
       </div>
       <div class="field required">
         <label>内容</label>
-        <textarea name="content" rows="15"></textarea>
+        <textarea name="content" rows="15" maxlength="1000" required></textarea>
       </div>
       <input type="submit" class="ui button" value="发布">
     </form>
