@@ -102,4 +102,8 @@ export class PostsService {
   update(id: string, params: UpdatePostDto) {
     return this.model.findByIdAndUpdate(id, params);
   }
+
+  deleteById(id: string) {
+    return this.model.findByIdAndDelete(id);
+  }
 }

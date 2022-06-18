@@ -1,4 +1,4 @@
-import { NotFoundException } from "oak_exception";
+import { ForbiddenException, NotFoundException } from "oak_exception";
 import {
   Controller,
   Form,
@@ -98,5 +98,27 @@ export class PostsController {
     flash("success", "更新成功");
     // 编辑成功后跳转到文章页面
     res.redirect("/posts/" + id);
+  }
+
+  @UseGuards(SSOGuard)
+  @Get("/:id/remove")
+  async remove(
+    @Params("id") id: string,
+    @UserParam() user: UserInfo,
+    @Res() res: Response,
+    @Flash() flash: Flash,
+  ) {
+    const post = await this.postsService.findById(id);
+    if (!post) {
+      throw new NotFoundException(`未找到id为${id}的博客`);
+    }
+    if (post.userId !== user.id) {
+      throw new ForbiddenException(`您没有权限删除该博客`);
+    }
+    await this.postsService.deleteById(id);
+
+    flash("success", "删除成功");
+    // 删除成功后跳转到主页
+    res.redirect("/posts");
   }
 }
