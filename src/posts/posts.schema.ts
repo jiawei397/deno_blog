@@ -1,4 +1,5 @@
 import { Prop } from "../schema.ts";
+import { UserInfo } from "../user/user.schema.ts";
 
 export class Post {
   @Prop({
@@ -20,4 +21,6 @@ export class Post {
     required: true,
   })
   pv: number;
+
+  author?: UserInfo | null;
 }

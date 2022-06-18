@@ -1,7 +1,9 @@
+import { NotFoundException } from "oak_exception";
 import {
   Controller,
   Form,
   Get,
+  Params,
   Post,
   Res,
   Response,
@@ -16,7 +18,9 @@ import { PostsService } from "./posts.service.ts";
 
 @Controller("/posts")
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+  ) {}
 
   @Get("/")
   async getAll(@Render() render: Render) {
@@ -42,5 +46,19 @@ export class PostsController {
     flash("success", "发表成功");
     // 发表成功后跳转到该文章页
     res.redirect(`/posts/${id}`);
+  }
+
+  @Get("/:id")
+  async findPostById(@Params("id") id: string, @Render() render: Render) {
+    const post = await this.postsService.findById(id, {
+      isWithUserInfo: true,
+      isIncrementPv: true,
+    });
+    if (!post) {
+      throw new NotFoundException(`未找到id为${id}的文章`);
+    }
+    return render("post", {
+      post,
+    });
   }
 }
