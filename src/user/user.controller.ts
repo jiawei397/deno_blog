@@ -75,12 +75,12 @@ export class UserController {
       await this.uploadImg(files[0].filename, filename);
       this.logger.debug(`上传图片成功`);
 
-      //TODO  提示注册成功
+      // 提示注册成功
       flash("success", "注册成功");
       flash("userId", id);
       res.redirect("/posts");
     } catch (e) {
-      //TODO 提示错误
+      // 提示错误
       flash("error", e.message);
       this.logger.error(e.message);
       res.redirect(REDIRECT_BACK);
