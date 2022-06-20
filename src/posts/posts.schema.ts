@@ -34,4 +34,5 @@ export class Post {
 
   author?: UserInfo | null;
   comments?: Comment[] | null;
+  commentsCount?: number;
 }

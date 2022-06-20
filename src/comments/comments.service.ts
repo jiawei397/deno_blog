@@ -42,6 +42,14 @@ export class CommentsService {
     return arr;
   }
 
+  findByPostIds(postIds: string[]) {
+    return this.model.findMany({
+      postId: {
+        $in: postIds,
+      },
+    });
+  }
+
   findById(id: string) {
     return this.model.findById(id);
   }

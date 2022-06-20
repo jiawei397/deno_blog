@@ -22,6 +22,14 @@ function setData(key: string, val: unknown) {
 
 export type ModelWithId<T> = T & { id: string };
 
+type SimpleType = string | number | boolean;
+
+type FindManyOptions<U> = {
+  [K in keyof U]?: SimpleType | {
+    $in: SimpleType[];
+  };
+};
+
 export class Model<T extends object, U = ModelWithId<T>> {
   name: string;
   schema: Constructor | undefined;
@@ -126,11 +134,19 @@ export class Model<T extends object, U = ModelWithId<T>> {
     return id;
   }
 
-  async findMany(options: Partial<U>) {
+  async findMany(
+    options: FindManyOptions<U>,
+  ): Promise<U[]> {
     const docs = await this.findAll();
     return docs.filter((doc: any) => {
       return Object.keys(options).every((key) => {
-        return doc[key] === (options as any)[key];
+        const k = key as keyof U;
+        const opv = options[k];
+        if (typeof opv === "object" && opv.$in) {
+          return opv.$in.includes(doc[key]);
+        } else {
+          return doc[key] === opv;
+        }
       });
     });
   }

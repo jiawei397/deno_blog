@@ -43,6 +43,7 @@ export class PostsService {
     }
     if (options.isWithComments) {
       post.comments = await this.commentsService.findByPostId(id);
+      post.commentsCount = post.comments.length;
     }
     // 增加浏览次数
     if (options.isIncrementPv) {
@@ -76,6 +77,17 @@ export class PostsService {
       );
       posts.forEach((post) => {
         post.author = users.find((user) => user.id === post.userId);
+      });
+    }
+    if (options.isWithComments) {
+      const comments = await this.commentsService.findByPostIds(
+        posts.map((post) => post.id),
+      );
+      posts.forEach((post) => {
+        post.comments = comments.filter((comment) =>
+          comment.postId === post.id
+        );
+        post.commentsCount = post.comments.length;
       });
     }
     // 增加浏览次数

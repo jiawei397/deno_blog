@@ -28,6 +28,7 @@ export class PostsController {
     if (userId) {
       const posts = await this.postsService.findByUserId(userId, {
         isWithUserInfo: true,
+        isWithComments: true,
       });
       return render("posts", {
         posts,
@@ -35,6 +36,7 @@ export class PostsController {
     } else {
       const posts = await this.postsService.findAll({
         isWithUserInfo: true,
+        isWithComments: true,
       });
       return render("posts", {
         posts,
