@@ -1,4 +1,4 @@
-import { Controller, Get } from "oak_nest";
+import { Controller, Get, Res, Response } from "oak_nest";
 import { Render } from "./tools/ejs.ts";
 import { Logger } from "./tools/log.ts";
 import { readYaml } from "./tools/utils.ts";
@@ -7,7 +7,7 @@ import { readYaml } from "./tools/utils.ts";
 export class AppController {
   constructor(private readonly logger: Logger) {}
 
-  @Get("/")
+  @Get("/version")
   async version(@Render() render: Render) {
     const scriptsConfig = await readYaml<{ version: string }>("scripts.yml");
     const version = scriptsConfig.version;
@@ -15,5 +15,10 @@ export class AppController {
     return render("index", {
       version,
     });
+  }
+
+  @Get("/")
+  index(@Res() res: Response) {
+    res.redirect("/posts");
   }
 }
