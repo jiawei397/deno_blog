@@ -4,34 +4,40 @@ import globals from "./globals.ts";
 import { anyExceptionFilter } from "oak_exception";
 import { logger } from "./tools/log.ts";
 import { SessionMiddleware } from "./session/session.middleware.ts";
+import { render } from "./tools/ejs.ts";
 
 const app = await NestFactory.create(AppModule);
 // app.setGlobalPrefix("/api/");
 
+app.use(anyExceptionFilter({
+  logger,
+  isHeaderResponseTime: true,
+  isLogCompleteError: true,
+  messageOf404: await render("404"),
+  getErrorBody(error, context) {
+    if (error.status === 404) {
+      return render("404");
+    } else {
+      return render("error", { error }, context.state.locals);
+    }
+  },
+}));
 // localStorage.clear();
-
 app.use(SessionMiddleware);
 
 app.useStaticAssets("./public", {
   prefix: "static",
 });
 
-app.use(anyExceptionFilter({
-  logger,
-  isHeaderResponseTime: true,
-  isDisableFormat404: false,
-  isLogCompleteError: true,
-}));
-
 app.use(app.routes());
 
 app.addEventListener("listen", ({ port }) => {
-  console.log(`Listening on: http://localhost:${port}`);
+  logger.info(`Listening on: http://localhost:${port}`);
 });
 
 addEventListener("error", (evt) => {
   evt.preventDefault();
-  console.error(`global`, evt.error);
+  logger.error(`global`, evt.error);
 });
 
 // addEventListener("rejectionhandled", (evt) => {
