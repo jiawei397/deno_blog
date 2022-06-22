@@ -4,6 +4,7 @@ import {
   Context,
   Controller,
   Delete,
+  FormData,
   FormDataFormattedBody,
   Get,
   Params,
@@ -11,7 +12,6 @@ import {
   REDIRECT_BACK,
   Res,
   Response,
-  UploadedFile,
   UseGuards,
   validateParams,
 } from "oak_nest";
@@ -40,7 +40,7 @@ export class UserController {
   @Post("signup")
   @UseGuards(LoginedGuard)
   async signup(
-    @UploadedFile() params: FormDataFormattedBody<CreateUserDto>,
+    @FormData() params: FormDataFormattedBody<CreateUserDto>,
     @Res() res: Response,
     @Flash() flash: Flash,
   ) {
@@ -109,7 +109,7 @@ export class UserController {
   @Post("signin")
   @UseGuards(LoginedGuard)
   async signin(
-    @UploadedFile() params: FormDataFormattedBody<SigninDto>,
+    @FormData() params: FormDataFormattedBody<SigninDto>,
     @Res() res: Response,
     @Flash() flash: Flash,
   ) {
