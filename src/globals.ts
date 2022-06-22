@@ -2,6 +2,7 @@ import { readYaml } from "./tools/utils.ts";
 import { DateFileLogConfig } from "date_file_log";
 
 export interface Config {
+  db: string;
   port: number;
   meta: {
     title: string;

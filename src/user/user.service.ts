@@ -1,6 +1,6 @@
 // deno-lint-ignore-file require-await
 import { Injectable } from "oak_nest";
-import { InjectModel, Model } from "../model.ts";
+import { InjectModel, Model } from "deno_mongo_schema";
 import { User } from "./user.schema.ts";
 
 @Injectable()
@@ -8,18 +8,21 @@ export class UserService {
   constructor(@InjectModel(User) private readonly userModel: Model<User>) {}
 
   async getAll() {
-    return this.userModel.findAll();
+    return this.userModel.findMany({});
   }
   async getUserById(id: string) {
     return this.userModel.findById(id);
   }
 
   async getUsersByIds(ids: string[]) {
-    return this.userModel.findByIds(ids);
+    return this.userModel.findMany({
+      _id: { $in: ids },
+    });
   }
 
   async addUser(user: User) {
-    return this.userModel.insertOne(user);
+    const id = await this.userModel.insertOne(user);
+    return id.toString();
   }
 
   async removeUser(id: string) {

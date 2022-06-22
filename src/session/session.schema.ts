@@ -1,9 +1,10 @@
-import { Prop } from "../schema.ts";
+import { BaseSchema, Prop, Schema } from "deno_mongo_schema";
 import { User } from "../user/user.schema.ts";
 
 export const SESSION_KEY = "session-id";
 
-export class Session {
+@Schema()
+export class Session extends BaseSchema {
   @Prop()
   userId?: string;
 

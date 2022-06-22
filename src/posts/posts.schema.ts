@@ -1,8 +1,9 @@
 import { Comment } from "../comments/comments.schema.ts";
-import { Prop } from "../schema.ts";
+import { BaseSchema, Prop, Schema } from "deno_mongo_schema";
 import { UserInfo } from "../user/user.schema.ts";
 
-export class Post {
+@Schema()
+export class Post extends BaseSchema {
   @Prop({
     required: true,
   })
@@ -22,12 +23,6 @@ export class Post {
     required: true,
   })
   pv: number;
-
-  @Prop()
-  createTime: Date;
-
-  @Prop()
-  updateTime: Date;
 
   createdAt?: string;
   contentHtml?: string;

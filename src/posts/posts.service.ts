@@ -1,5 +1,5 @@
 import { Injectable } from "oak_nest";
-import { InjectModel, Model, ModelWithId } from "../model.ts";
+import { InjectModel, Model } from "deno_mongo_schema";
 import { Logger } from "../tools/log.ts";
 import { UserService } from "../user/user.service.ts";
 import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
@@ -23,14 +23,12 @@ export class PostsService {
     private readonly logger: Logger,
   ) {}
 
-  save(params: CreatePostDto): Promise<string> {
-    const now = new Date();
-    return this.model.insertOne({
+  async save(params: CreatePostDto): Promise<string> {
+    const id = await this.model.insertOne({
       ...params,
       pv: 0,
-      createTime: now,
-      updateTime: now,
     });
+    return id.toString();
   }
 
   async findById(id: string, options: PopulateOptions = {}) {
@@ -39,7 +37,7 @@ export class PostsService {
       return;
     }
     if (options.isWithUserInfo) {
-      post.author = await this.userService.getUserById(post.userId);
+      post.author = await this.userService.getUserById(post.userId) || null;
     }
     if (options.isWithComments) {
       post.comments = await this.commentsService.findByPostId(id);
@@ -62,13 +60,13 @@ export class PostsService {
   }
 
   async findAll(options: PopulateOptions = {}) {
-    const posts = await this.model.findAll();
+    const posts = await this.model.findMany({});
     await this.formatPosts(posts, options);
     return posts;
   }
 
   private async formatPosts(
-    posts: ModelWithId<Post>[],
+    posts: Required<Post>[],
     options: PopulateOptions = {},
   ) {
     if (options.isWithUserInfo) {
@@ -76,7 +74,7 @@ export class PostsService {
         posts.map((post) => post.userId),
       );
       posts.forEach((post) => {
-        post.author = users.find((user) => user.id === post.userId);
+        post.author = users.find((user) => user.id === post.userId) || null;
       });
     }
     if (options.isWithComments) {

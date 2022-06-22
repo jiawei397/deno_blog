@@ -1,5 +1,4 @@
-import { ModelWithId } from "../model.ts";
-import { Prop } from "../schema.ts";
+import { BaseSchema, Prop, Schema } from "deno_mongo_schema";
 
 export enum Gender {
   X = "x", // 保密
@@ -7,8 +6,10 @@ export enum Gender {
   Female = "f",
 }
 
-export class User {
+@Schema()
+export class User extends BaseSchema {
   @Prop({
+    index: true,
     unique: true,
   })
   name: string;
@@ -28,4 +29,4 @@ export class User {
   bio: string;
 }
 
-export type UserInfo = ModelWithId<User>;
+export type UserInfo = Required<User>;

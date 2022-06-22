@@ -2,6 +2,7 @@ port: 8000
 meta:
   title: Deno Blog
   description: Deno Blog is a simple blog written in Deno.
+db: "mongodb://192.168.21.176:27018/blog"  
 log:
   appenders:
     dateFile:

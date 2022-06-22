@@ -1,5 +1,5 @@
 import { Injectable } from "oak_nest";
-import { InjectModel, Model } from "../model.ts";
+import { InjectModel, Model } from "deno_mongo_schema";
 import { UserService } from "../user/user.service.ts";
 import { Comment } from "./comments.schema.ts";
 import { format } from "timeago";
@@ -15,12 +15,7 @@ export class CommentsService {
   }
 
   create(params: CreateCommentDto) {
-    const now = new Date();
-    return this.model.insertOne({
-      ...params,
-      createTime: now,
-      updateTime: now,
-    });
+    return this.model.insertOne(params);
   }
 
   deleteById(id: string) {
@@ -37,7 +32,7 @@ export class CommentsService {
       comment.createdAt = format(comment.createTime, "zh_CN");
       const html = Marked.parse(comment.content).content;
       comment.contentHtml = html;
-      comment.author = users.find((user) => user.id === comment.userId);
+      comment.author = users.find((user) => user.id === comment.userId) || null;
     });
     return arr;
   }

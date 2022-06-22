@@ -1,4 +1,5 @@
 import { assert, Context, Factory, Next } from "oak_nest";
+import { logger } from "../tools/log.ts";
 import { SESSION_KEY } from "./session.schema.ts";
 import { SessionService } from "./session.service.ts";
 
@@ -7,16 +8,18 @@ export async function SessionMiddleware(context: Context, next: Next) {
   let sessionId = await context.cookies.get(SESSION_KEY);
   let session;
   if (sessionId) {
-    session = await sessionService.findById(sessionId, true);
+    session = await sessionService.findById(sessionId, true).catch((_err) =>
+      null
+    );
     if (!session) {
-      console.warn(`没有找到session: ${sessionId}`);
+      logger.warn(`没有找到session: ${sessionId}`);
     }
   } else {
-    console.warn(`cookie中没有找到${SESSION_KEY}`);
+    logger.warn(`cookie中没有找到${SESSION_KEY}`);
   }
   if (!session) {
     sessionId = await sessionService.save({});
-    console.log(`创建session: ${sessionId}`);
+    logger.info(`创建session: ${sessionId}`);
     session = {
       id: sessionId,
     };

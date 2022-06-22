@@ -1,8 +1,8 @@
 import { Injectable } from "oak_nest";
-import { InjectModel, Model } from "../model.ts";
 import { Session } from "./session.schema.ts";
 import { CreateSession, UpdateSession } from "./session.interface.ts";
 import { UserService } from "../user/user.service.ts";
+import { InjectModel, Model } from "deno_mongo_schema";
 
 @Injectable()
 export class SessionService {
@@ -36,6 +36,6 @@ export class SessionService {
   }
 
   findAll(): Promise<Session[]> {
-    return this.model.findAll();
+    return this.model.findMany();
   }
 }
