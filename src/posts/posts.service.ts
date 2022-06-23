@@ -1,7 +1,6 @@
 import { Injectable } from "oak_nest";
 import { InjectModel, Model } from "deno_mongo_schema";
 import { Logger } from "../tools/log.ts";
-import { UserService } from "../user/user.service.ts";
 import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
 import { Post } from "./posts.schema.ts";
 import { format } from "timeago";
@@ -11,6 +10,7 @@ import { CommentsService } from "../comments/comments.service.ts";
 interface PopulateOptions {
   isWithUserInfo?: boolean;
   isWithComments?: boolean;
+  isWithCommentsCount?: boolean;
   isIncrementPv?: boolean;
 }
 
@@ -18,7 +18,6 @@ interface PopulateOptions {
 export class PostsService {
   constructor(
     @InjectModel(Post) private readonly model: Model<Post>,
-    private readonly userService: UserService,
     private readonly commentsService: CommentsService,
     private readonly logger: Logger,
   ) {}
@@ -32,12 +31,11 @@ export class PostsService {
   }
 
   async findById(id: string, options: PopulateOptions = {}) {
-    const post = await this.model.findById(id);
+    const post = await this.model.findById(id, {
+      populates: this.getPopulates(options),
+    });
     if (!post) {
       return;
-    }
-    if (options.isWithUserInfo) {
-      post.author = await this.userService.getUserById(post.userId) || null;
     }
     if (options.isWithComments) {
       post.comments = await this.commentsService.findByPostId(id);
@@ -45,12 +43,44 @@ export class PostsService {
     }
     // 增加浏览次数
     if (options.isIncrementPv) {
-      this.model.findByIdAndUpdate(id, {
-        pv: post.pv + 1,
-      }).catch(this.logger.error);
+      this.incrementPvById(id).catch(this.logger.error);
     }
     this.format(post);
     return post;
+  }
+
+  private incrementPvById(id: string) {
+    return this.model.findByIdAndUpdate(id, {
+      $inc: {
+        pv: 1,
+      },
+    });
+  }
+
+  private incrementPvByIds(ids: string[]) {
+    return this.model.updateMany({
+      id: {
+        $in: ids,
+      },
+    }, {
+      $inc: {
+        pv: 1,
+      },
+    });
+  }
+
+  private getPopulates(options?: PopulateOptions) {
+    if (!options) {
+      return;
+    }
+    const populates: Record<string, boolean> = {};
+    if (options.isWithUserInfo) {
+      populates["author"] = true;
+    }
+    if (options.isWithCommentsCount) {
+      populates["commentsCount"] = true;
+    }
+    return populates;
   }
 
   private format(post: Post) {
@@ -60,58 +90,41 @@ export class PostsService {
   }
 
   async findAll(options: PopulateOptions = {}) {
-    const posts = await this.model.findMany({});
-    await this.formatPosts(posts, options);
+    const posts = await this.model.findMany({}, {
+      populates: this.getPopulates(options),
+      sort: {
+        createTime: -1,
+      },
+    });
+    this.formatPosts(posts, options);
     return posts;
   }
 
-  private async formatPosts(
+  private formatPosts(
     posts: Required<Post>[],
     options: PopulateOptions = {},
   ) {
-    if (options.isWithUserInfo) {
-      const users = await this.userService.getUsersByIds(
-        posts.map((post) => post.userId),
-      );
-      posts.forEach((post) => {
-        post.author = users.find((user) => user.id === post.userId) || null;
-      });
-    }
-    if (options.isWithComments) {
-      const comments = await this.commentsService.findByPostIds(
-        posts.map((post) => post.id),
-      );
-      posts.forEach((post) => {
-        post.comments = comments.filter((comment) =>
-          comment.postId === post.id
-        );
-        post.commentsCount = post.comments.length;
-      });
-    }
     // 增加浏览次数
     if (options.isIncrementPv) {
-      posts.forEach((post) => {
-        this.model.findByIdAndUpdate(post.id, {
-          pv: post.pv + 1,
-        }).catch(this.logger.error);
-      });
+      this.incrementPvByIds(posts.map((post) => post.id)).catch(
+        this.logger.error,
+      );
     }
     posts.forEach((post) => {
       this.format(post);
-    });
-    posts.sort((a, b) => {
-      if (a.createTime > b.createTime) {
-        return -1;
-      }
-      return 1;
     });
   }
 
   async findByUserId(userId: string, options: PopulateOptions = {}) {
     const posts = await this.model.findMany({
       userId,
+    }, {
+      populates: this.getPopulates(options),
+      sort: {
+        createTime: -1,
+      },
     });
-    await this.formatPosts(posts, options);
+    this.formatPosts(posts, options);
     return posts;
   }
 

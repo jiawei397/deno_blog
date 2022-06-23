@@ -1,14 +1,12 @@
 import { Injectable } from "oak_nest";
 import { Session } from "./session.schema.ts";
 import { CreateSession, UpdateSession } from "./session.interface.ts";
-import { UserService } from "../user/user.service.ts";
 import { InjectModel, Model } from "deno_mongo_schema";
 
 @Injectable()
 export class SessionService {
   constructor(
     @InjectModel(Session) private readonly model: Model<Session>,
-    private readonly userService: UserService,
   ) {
   }
   async save(params: CreateSession): Promise<string> {
@@ -16,15 +14,14 @@ export class SessionService {
     return id.toString();
   }
 
-  async findById(id: string, isWithUserInfo: boolean) {
-    const session = await this.model.findById(id);
-    if (!session) {
-      return;
-    }
-    if (isWithUserInfo && session.userId) {
-      session.user = await this.userService.getUserById(session.userId);
-    }
-    return session;
+  findById(id: string, isWithUserInfo: boolean) {
+    return this.model.findById(id, {
+      populates: isWithUserInfo
+        ? {
+          "user": true,
+        }
+        : undefined,
+    });
   }
 
   update(params: UpdateSession) {
