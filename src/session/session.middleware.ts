@@ -35,7 +35,12 @@ export async function SessionMiddleware(context: Context, next: Next) {
   await next();
 
   assert(sessionId);
-  await context.cookies.set(SESSION_KEY, sessionId);
+  await context.cookies.set(SESSION_KEY, sessionId, {
+    httpOnly: true,
+    secure: false,
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: "strict",
+  });
 
   const { success, error, userId } = context.state;
   if (success || error || userId !== undefined) {
