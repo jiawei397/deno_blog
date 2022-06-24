@@ -4,10 +4,10 @@ import { SessionService } from "../session/session.service.ts";
 import { UserController } from "./user.controller.ts";
 import { UserService } from "./user.service.ts";
 
-Deno.test("getAllUsers", async () => {
+Deno.test("user", async (t) => {
   const callStacks: number[] = [];
   const userService = {
-    getAllUsers() {
+    getAll() {
       callStacks.push(1);
       return Promise.resolve([]);
     },
@@ -19,6 +19,25 @@ Deno.test("getAllUsers", async () => {
     .overrideProvider(SessionService, {})
     .compile();
   const userController = await moduleRef.get(UserController);
-  assertEquals(userController.getAllUsers(), []);
-  assertEquals(callStacks, [1]);
+
+  await t.step("getAllUsers", async () => {
+    const users = await userController.getAllUsers();
+    assertEquals(users, []);
+    assertEquals(callStacks, [1]);
+  });
+
+  await t.step("currentUser", () => {
+    const userInfo = userController.currentUserInfo({
+      state: {
+        locals: {
+          user: {
+            name: "test",
+            password: "123456",
+          },
+        },
+      },
+      // deno-lint-ignore no-explicit-any
+    } as any);
+    assertEquals(userInfo, { name: "test" });
+  });
 });

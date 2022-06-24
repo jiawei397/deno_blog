@@ -9,7 +9,7 @@
     "ejs": "https://deno.land/x/deno_ejs@v0.2.3/mod.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
     "oak_exception": "https://deno.land/x/oak_exception@v0.1.2/mod.ts",
-    "oak_nest": "https://deno.land/x/oak_nest@v1.10.7/mod.ts",
+    "oak_nest": "https://deno.land/x/oak_nest@v1.10.8/mod.ts",
     "yaml_loader": "https://deno.land/x/yaml_loader@v0.1.0/mod.ts",
     "timeago": "https://esm.sh/v78/timeago.js@4.0.2/es2022/timeago.js",
     "markdown": "https://deno.land/x/markdown@v2.0.0/mod.ts"
