@@ -37,7 +37,7 @@ app.addEventListener("listen", ({ port }) => {
 
 addEventListener("error", (evt) => {
   evt.preventDefault();
-  logger.error(`global`, evt.error);
+  logger.error(`global`, evt);
 });
 
 // addEventListener("rejectionhandled", (evt) => {
