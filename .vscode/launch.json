@@ -22,6 +22,25 @@
         "src/mod.ts"
       ],
       "attachSimplePort": 9229
+    },
+    {
+      "name": "test",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/src/user/user.controller_test.ts",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "test",
+        "--inspect-brk",
+        "-A",
+        "--config",
+        "deno.jsonc",
+        "--unstable",
+        "--importmap",
+        "import_map.json"
+      ],
+      "attachSimplePort": 9229
     }
   ]
 }

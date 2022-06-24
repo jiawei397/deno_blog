@@ -21,5 +21,13 @@ scripts:
     importMap: import_map.json
     unstable: true  
     watch: false
+  unit:
+    cmd: deno test
+    watch: false
+    unstable: true
+    importMap: import_map.json
+    allow:
+      - read
+      - write
 watcher:
   skip: ["*/.git/*", "*/data/*"]
