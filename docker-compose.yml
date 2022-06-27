@@ -1,0 +1,15 @@
+# docker-compose build 或 up
+version: '3'
+services:
+  server:
+    image: 你的镜像名:版本号
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./config/server.yaml:/app/config/server.yaml
+      - ./public/img:/app/public/img
