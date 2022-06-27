@@ -30,7 +30,7 @@ scripts:
       - read
       - write
   pm2: 
-    cmd: pm2 start --name deno_blog app.sh -i 2
+    cmd: pm2 start --name deno_blog app.sh
     watch: false    
 watcher:
   skip: ["*/.git/*", "*/data/*"]
