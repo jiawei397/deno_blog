@@ -31,6 +31,9 @@ scripts:
       - write
   pm2: 
     cmd: pm2 start --name deno_blog app.sh
+    watch: false 
+  map:
+    cmd: deno run --allow-read --allow-write https://deno.land/x/deno_proxy@v1.1.0/cli/mod.ts --baseUrl http://localhost --oldPath import_map.json --newPath import_map_proxy.json  
     watch: false    
 watcher:
   skip: ["*/.git/*", "*/data/*"]
