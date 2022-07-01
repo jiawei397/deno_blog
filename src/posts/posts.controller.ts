@@ -13,7 +13,7 @@ import {
 import { SSOGuard } from "../guards/sso.guard.ts";
 import { Flash, UserParam } from "../session/session.decorator.ts";
 import { Render } from "../tools/ejs.ts";
-import { UserInfo } from "../user/user.schema.ts";
+import type { UserInfo } from "../user/user.schema.ts";
 import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";
 import { PostsService } from "./posts.service.ts";
 

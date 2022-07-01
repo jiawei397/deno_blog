@@ -13,7 +13,7 @@ import {
 import { SSOGuard } from "../guards/sso.guard.ts";
 import { Flash, UserParam } from "../session/session.decorator.ts";
 import { Logger } from "../tools/log.ts";
-import { UserInfo } from "../user/user.schema.ts";
+import type { UserInfo } from "../user/user.schema.ts";
 import { CreateCommentDto } from "./comments.dto.ts";
 import { CommentsService } from "./comments.service.ts";
 

@@ -5,7 +5,6 @@ import {
   Controller,
   Delete,
   FormData,
-  FormDataFormattedBody,
   Get,
   Params,
   Post,
@@ -15,6 +14,7 @@ import {
   UseGuards,
   validateParams,
 } from "oak_nest";
+import type { FormDataFormattedBody } from "oak_nest";
 import { LoginedGuard, SSOGuard } from "../guards/sso.guard.ts";
 import { Flash } from "../session/session.decorator.ts";
 import { SessionService } from "../session/session.service.ts";
