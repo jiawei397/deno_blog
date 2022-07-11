@@ -7,10 +7,10 @@ scripts:
       - net
       - read
       - write
+      - env
     config: deno.jsonc
     importMap: import_map.json
     unstable: true
-    watch: false
   e2e:
     cmd: "deno run tests/e2e/mod.ts"
     allow:

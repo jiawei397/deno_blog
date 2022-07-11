@@ -5,7 +5,7 @@
     "deno_class_validator": "https://deno.land/x/deno_class_validator@v1.0.0/mod.ts",
     "date_file_log": "https://deno.land/x/date_file_log@v0.2.6/mod.ts",
     "deno_mongo_schema": "https://deno.land/x/deno_mongo_schema@v0.10.5/mod.ts",
-    "ejs": "https://deno.land/x/deno_ejs@v0.2.3/mod.ts",
+    "ejs": "https://esm.sh/ejs@3.1.8?pin=v86",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
     "oak_exception": "https://deno.land/x/oak_exception@v0.1.2/mod.ts",
     "oak_nest": "https://deno.land/x/oak_nest@v1.11.4/mod.ts",

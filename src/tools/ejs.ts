@@ -15,6 +15,9 @@ export function render(
     ...globals.meta,
     ...locals,
     ...data,
+  }, {
+    cache: true,
+    filename: path,
   });
 }
 
