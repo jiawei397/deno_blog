@@ -30,7 +30,7 @@ scripts:
       - read
       - write
   pm2: 
-    cmd: pm2 start --name deno_blog app.sh
+    cmd: pm2 start --name deno_blog src/mod.ts --interpreter='deno' --interpreter-args='run --allow-net --allow-run --allow-env --allow-write --allow-read --importmap import_map.json --unstable'
     watch: false 
   map:
     cmd: deno run --allow-read --allow-write https://deno.land/x/deno_proxy@v1.1.0/cli/mod.ts --baseUrl http://localhost --oldPath import_map.json --newPath import_map_proxy.json  

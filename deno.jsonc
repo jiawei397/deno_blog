@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "strictPropertyInitialization": false
+  },
+  "tasks": {
+    "pm2": "pm2 start --name deno_blog src/mod.ts --interpreter='deno' --interpreter-args='run --allow-net --allow-run --allow-env --allow-write --allow-read --importmap import_map.json --unstable'"
   }
 }
