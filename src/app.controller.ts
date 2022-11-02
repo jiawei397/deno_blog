@@ -1,7 +1,7 @@
 import { Controller, Get, Res, Response } from "oak_nest";
 import { Render } from "./tools/ejs.ts";
 import { Logger } from "./tools/log.ts";
-import { readYaml } from "./tools/utils.ts";
+import { parse } from "jsonc";
 
 @Controller("")
 export class AppController {
@@ -9,8 +9,9 @@ export class AppController {
 
   @Get("/version")
   async version(@Render() render: Render) {
-    const scriptsConfig = await readYaml<{ version: string }>("scripts.yml");
-    const version = scriptsConfig.version;
+    const text = await Deno.readTextFile("deno.jsonc");
+    const json: { version: string } = parse(text);
+    const { version } = json;
     this.logger.info(`version: ${version}`);
     return render("index", {
       version,

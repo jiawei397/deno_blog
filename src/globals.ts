@@ -11,9 +11,9 @@ export interface Config {
   log: DateFileLogConfig;
 }
 
-const config = await readYaml<Config>("config/server.yaml");
+const config = await readYaml<Config>("config.yaml");
 if (!config) {
-  console.error("not read config/server.yaml");
+  console.error("not read config.yaml");
   Deno.exit(1);
 }
 

@@ -11,6 +11,7 @@
     "oak_nest": "https://deno.land/x/oak_nest@v1.11.4/mod.ts",
     "yaml_loader": "https://deno.land/x/yaml_loader@v0.1.0/mod.ts",
     "timeago": "https://esm.sh/v78/timeago.js@4.0.2/es2022/timeago.js",
-    "markdown": "https://deno.land/x/markdown@v2.0.0/mod.ts"
+    "markdown": "https://deno.land/x/markdown@v2.0.0/mod.ts",
+    "jsonc": "https://deno.land/x/jsonc@1/main.ts"
   }
 }
