@@ -6,9 +6,9 @@
     "strictPropertyInitialization": false
   },
   "tasks": {
-    "dev": "deno run --allow-net --allow-env --allow-write --allow-read --importmap import_map.json --unstable --watch mod.ts",
+    "dev": "deno run --allow-net --allow-env --allow-write --allow-read --importmap import_map.json --unstable --check --watch mod.ts",
     "start": "deno run --allow-net --allow-env --allow-write --allow-read --importmap import_map.json --unstable mod.ts",
-    "cache": "deno cache --import-map import_map.json --lock lock.json --unstable --lock-write mod.ts",
+    "cache": "deno cache --import-map import_map.json --lock deno.lock --unstable --lock-write mod.ts",
     "test": "deno test --allow-net --allow-env --allow-write --allow-read --import-map import_map.json --unstable",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "pm2": "pm2 start --name deno_blog mod.ts --interpreter='deno' --interpreter-args='run --allow-net --allow-run --allow-env --allow-write --allow-read --importmap import_map.json --unstable'"
