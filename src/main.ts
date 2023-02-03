@@ -35,14 +35,14 @@ app.addEventListener("listen", ({ port }) => {
   logger.info(`Listening on: http://localhost:${port}`);
 });
 
-addEventListener("error", (evt) => {
+addEventListener("unhandledrejection", (evt) => {
   evt.preventDefault();
-  logger.error(`global`, evt);
+  logger.error(`unhandledrejection`, evt.reason);
 });
 
-// addEventListener("rejectionhandled", (evt) => {
-//   evt.preventDefault();
-//   console.error(`rejectionhandled`, evt);
-// });
+addEventListener("error", (evt) => {
+  evt.preventDefault(); // 这句很重要
+  logger.error(`global error`, evt.error);
+});
 
 await app.listen({ port: globals.port });
