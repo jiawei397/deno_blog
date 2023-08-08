@@ -27,7 +27,7 @@ export class CommentsService {
     });
     arr.forEach((comment) => {
       comment.createdAt = format(comment.createTime, "zh_CN");
-      const html = Marked.parse(comment.content).content;
+      const html = Marked.parse(comment.content);
       comment.contentHtml = html;
     });
     return arr;

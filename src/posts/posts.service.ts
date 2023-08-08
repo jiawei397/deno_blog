@@ -84,8 +84,8 @@ export class PostsService {
   }
 
   private format(post: Post) {
-    post.createdAt = format(post.createTime, "zh_CN");
-    const html = Marked.parse(post.content).content;
+    post.createdAt = format(post.createTime!, "zh_CN");
+    const html = Marked.parse(post.content);
     post.contentHtml = html;
   }
 

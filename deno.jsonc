@@ -1,6 +1,7 @@
 {
   "version": "0.1.2",
   "name": "deno_blog",
+  "lock": false,
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false
