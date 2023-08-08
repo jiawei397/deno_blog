@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Deno",
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "deno",
@@ -17,9 +17,7 @@
         "--config",
         "deno.jsonc",
         "--unstable",
-        "--importmap",
-        "import_map.json",
-        "src/mod.ts"
+        "mod.ts"
       ],
       "attachSimplePort": 9229
     },
