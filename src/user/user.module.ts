@@ -1,4 +1,4 @@
-import { Module } from "oak_nest";
+import { Module } from "@nest";
 import { UserController } from "./user.controller.ts";
 
 @Module({

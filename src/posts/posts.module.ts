@@ -1,4 +1,4 @@
-import { Module } from "oak_nest";
+import { Module } from "@nest";
 import { PostsController } from "./posts.controller.ts";
 
 @Module({

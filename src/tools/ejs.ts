@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Context, createParamDecorator } from "oak_nest";
+import { Context, createParamDecorator } from "@nest";
 import { renderFile } from "ejs";
 import globals from "../globals.ts";
 
@@ -29,7 +29,7 @@ export type Render = (
 export const Render = createParamDecorator(
   (context: Context): Render => {
     return (path: string, data: Record<string, any>) => {
-      return render(path, data, context.state.locals);
+      return render(path, data, context.request.states.locals);
     };
   },
 );

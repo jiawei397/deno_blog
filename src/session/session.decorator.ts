@@ -1,4 +1,4 @@
-import { Context, createParamDecorator } from "oak_nest";
+import { Context, createParamDecorator } from "@nest";
 import { CreateSession } from "./session.interface.ts";
 
 export const Flash = createParamDecorator(

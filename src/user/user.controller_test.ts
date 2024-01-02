@@ -1,5 +1,4 @@
-import { createTestingModule } from "oak_nest";
-import { assertEquals } from "std/testing/asserts.ts";
+import { assert, assertEquals, createTestingModule } from "@nest/tests";
 import { SessionService } from "../session/session.service.ts";
 import { UserController } from "./user.controller.ts";
 import { UserService } from "./user.service.ts";
@@ -19,6 +18,7 @@ Deno.test("user", async (t) => {
     .overrideProvider(SessionService, {})
     .compile();
   const userController = await moduleRef.get(UserController);
+  assert(userController);
 
   await t.step("getAllUsers", async () => {
     const users = await userController.getAllUsers();

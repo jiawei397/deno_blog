@@ -9,7 +9,7 @@ import {
   Res,
   Response,
   UseGuards,
-} from "oak_nest";
+} from "@nest";
 import { SSOGuard } from "../guards/sso.guard.ts";
 import { Flash, UserParam } from "../session/session.decorator.ts";
 import { Logger } from "../tools/log.ts";

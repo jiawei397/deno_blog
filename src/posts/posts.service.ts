@@ -1,4 +1,4 @@
-import { Injectable } from "oak_nest";
+import { Injectable } from "@nest";
 import { InjectModel, Model } from "deno_mongo_schema";
 import { Logger } from "../tools/log.ts";
 import { CreatePostDto, UpdatePostDto } from "./posts.dto.ts";

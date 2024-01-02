@@ -1,4 +1,4 @@
-import { Injectable } from "oak_nest";
+import { Injectable } from "@nest";
 import { InjectModel, Model } from "deno_mongo_schema";
 import { Comment } from "./comments.schema.ts";
 import { format } from "timeago";

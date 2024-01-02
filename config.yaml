@@ -1,7 +1,8 @@
-port: 8000
+port: 3000
 meta:
   title: Deno Blog
   description: Deno Blog is a simple blog written in Deno.
+# db: "mongodb://localhost:27017/blog"  
 db: "mongodb://10.100.30.65:27018/blog"  
 log:
   appenders:

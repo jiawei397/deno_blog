@@ -1,5 +1,5 @@
 // deno-lint-ignore-file require-await
-import { Injectable } from "oak_nest";
+import { Injectable } from "@nest";
 import { InjectModel, Model } from "deno_mongo_schema";
 import { User } from "./user.schema.ts";
 

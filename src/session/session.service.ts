@@ -1,4 +1,4 @@
-import { Injectable } from "oak_nest";
+import { Injectable } from "@nest";
 import { Session } from "./session.schema.ts";
 import { CreateSession, UpdateSession } from "./session.interface.ts";
 import { InjectModel, Model } from "deno_mongo_schema";

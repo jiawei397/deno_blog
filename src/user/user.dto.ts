@@ -24,6 +24,8 @@ export class CreateUserDto {
   @MinLength(1)
   @MaxLength(30)
   bio: string;
+
+  avatar: File;
 }
 
 export class SigninDto {

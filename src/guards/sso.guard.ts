@@ -1,4 +1,4 @@
-import { CanActivate, Context, Injectable } from "oak_nest";
+import { CanActivate, Context, Injectable } from "@nest";
 
 /**
  * 如果没有登陆，跳转到登陆页面

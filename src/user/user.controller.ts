@@ -1,20 +1,18 @@
 import { BadRequestException, NotFoundException } from "oak_exception";
 import {
   assert,
-  Context,
+  type Context,
   Controller,
   Delete,
-  FormData,
+  Form,
   Get,
   Params,
   Post,
-  REDIRECT_BACK,
   Res,
-  Response,
+  type Response,
   UseGuards,
   validateParams,
-} from "oak_nest";
-import type { FormDataFormattedBody } from "oak_nest";
+} from "@nest";
 import { LoginedGuard, SSOGuard } from "../guards/sso.guard.ts";
 import { Flash } from "../session/session.decorator.ts";
 import { SessionService } from "../session/session.service.ts";
@@ -40,27 +38,17 @@ export class UserController {
   @Post("signup")
   @UseGuards(LoginedGuard)
   async signup(
-    @FormData() params: FormDataFormattedBody<CreateUserDto>,
+    @Form() form: CreateUserDto,
     @Res() res: Response,
     @Flash() flash: Flash,
   ) {
     try {
-      const files = params.files;
-      // 校验参数
-      if (
-        !files || files.length === 0 || !files[0].originalName ||
-        !files[0].filename
-      ) {
-        throw new BadRequestException("必须上传头像");
-      }
-      const form = params.fields;
-      await validateParams(CreateUserDto, form);
       if (form.password !== form.repassword) {
         throw new BadRequestException("两次输入密码不一致");
       }
       this.logger.debug("注册参数校验成功");
 
-      const filename = files[0].filename.split("/").pop()!; // 随机文件名，直接使用就行了，也可以使用md5进行加密，这样同样的文件只会有一个
+      const filename = form.avatar.name.split("/").pop()!; // 随机文件名，直接使用就行了，也可以使用md5进行加密，这样同样的文件只会有一个
       // 保存数据
       const id = await this.userService.addUser({
         name: form.name,
@@ -72,25 +60,25 @@ export class UserController {
       this.logger.info(`用户【${id}】注册成功`);
 
       // 上传图片
-      await this.uploadImg(files[0].filename, filename);
+      await this.uploadImg(form.avatar, filename);
       this.logger.debug(`上传图片成功`);
 
       // 提示注册成功
       flash("success", "注册成功");
       flash("userId", id);
-      res.redirect("/posts");
+      // res.redirect("/posts");
     } catch (e) {
       // 提示错误
       flash("error", e.message);
       this.logger.error(e.message);
-      res.redirect(REDIRECT_BACK);
+      // res.redirect(REDIRECT_BACK);
     }
   }
 
-  private async uploadImg(tmpPath: string, filename: string) {
+  private async uploadImg(file: File, filename: string) {
     const imgPath = "public/img";
     await Deno.mkdir(imgPath).catch((_err) => null);
-    await Deno.copyFile(tmpPath, imgPath + "/" + filename);
+    await Deno.writeFile(imgPath + "/" + filename, file.stream());
   }
 
   @Get("user")
@@ -109,7 +97,7 @@ export class UserController {
   @Post("signin")
   @UseGuards(LoginedGuard)
   async signin(
-    @FormData() params: FormDataFormattedBody<SigninDto>,
+    @Form() params: SigninDto,
     @Res() res: Response,
     @Flash() flash: Flash,
   ) {
@@ -147,7 +135,7 @@ export class UserController {
   @Get("currentUserInfo")
   @UseGuards(SSOGuard)
   currentUserInfo(context: Context) {
-    const user = { ...context.state.locals?.user };
+    const user = { ...context.request.states.locals?.user };
     delete user.password;
     return user;
   }

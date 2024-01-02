@@ -1,38 +1,36 @@
-import { NestFactory } from "oak_nest";
+import { NestFactory } from "@nest";
+import { Router } from "@nest/hono";
 import { AppModule } from "./app.module.ts";
 import globals from "./globals.ts";
-import { anyExceptionFilter } from "oak_exception";
+import { anyExceptionFilter, getLogMiddleware } from "@nest/uinv";
 import { logger } from "./tools/log.ts";
-import { SessionMiddleware } from "./session/session.middleware.ts";
 import { render } from "./tools/ejs.ts";
 
-const app = await NestFactory.create(AppModule);
+const app = await NestFactory.create(AppModule, Router);
+
 // app.setGlobalPrefix("/api/");
 
-app.use(anyExceptionFilter({
+app.use(getLogMiddleware({
   logger,
-  isHeaderResponseTime: true,
-  isLogCompleteError: true,
+}));
+
+app.useGlobalFilters(anyExceptionFilter({
+  logger,
+  isDisableFormat404: true,
+  isIgnoreLog401: true,
+  isLogCompleteError: true, // isDebug(),
   messageOf404: await render("404"),
   getErrorBody(error, context) {
-    if (error.status === 404) {
+    if ((error as any).status === 404) {
       return render("404");
     } else {
-      return render("error", { error }, context.state.locals);
+      return render("error", { error }, context.request.states.locals);
     }
   },
 }));
-// localStorage.clear();
-app.use(SessionMiddleware);
 
 app.useStaticAssets("./public", {
   prefix: "static",
-});
-
-app.use(app.routes());
-
-app.addEventListener("listen", ({ port }) => {
-  logger.info(`Listening on: http://localhost:${port}`);
 });
 
 addEventListener("unhandledrejection", (evt) => {

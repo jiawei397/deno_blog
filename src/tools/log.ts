@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { getLogger, initLog } from "date_file_log";
 import globals from "../globals.ts";
-import { Injectable, Reflect } from "oak_nest";
+import { Injectable, Reflect } from "@nest";
 
 await initLog(globals.log);
 

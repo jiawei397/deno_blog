@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Response } from "oak_nest";
+import { Controller, Get, Res, type Response } from "@nest";
 import { Render } from "./tools/ejs.ts";
 import { Logger } from "./tools/log.ts";
 import { parse } from "jsonc";
