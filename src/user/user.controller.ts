@@ -1,11 +1,12 @@
-import { BadRequestException, NotFoundException } from "oak_exception";
 import {
   assert,
+  BadRequestException,
   type Context,
   Controller,
   Delete,
   Form,
   Get,
+  NotFoundException,
   Params,
   Post,
   REDIRECT_BACK,
@@ -67,12 +68,12 @@ export class UserController {
       // 提示注册成功
       flash("success", "注册成功");
       flash("userId", id);
-      // res.redirect("/posts");
+      res.redirect("/posts");
     } catch (e) {
       // 提示错误
       flash("error", e.message);
       this.logger.error(e.message);
-      // res.redirect(REDIRECT_BACK);
+      res.redirect(REDIRECT_BACK);
     }
   }
 

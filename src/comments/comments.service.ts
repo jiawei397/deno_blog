@@ -3,13 +3,18 @@ import { InjectModel, Model } from "deno_mongo_schema";
 import { Comment } from "./comments.schema.ts";
 import { format } from "timeago";
 import { Marked } from "markdown";
-import { CreateCommentDto } from "./comments.dto.ts";
+
+interface ICreateComment {
+  postId: string;
+  userId: string;
+  content: string;
+}
 
 @Injectable()
 export class CommentsService {
   constructor(@InjectModel(Comment) private readonly model: Model<Comment>) {}
 
-  create(params: CreateCommentDto) {
+  create(params: ICreateComment) {
     return this.model.insertOne(params);
   }
 

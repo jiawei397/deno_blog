@@ -1,16 +1,23 @@
-import { assert, Context, Injectable, NestInterceptor, Next } from "@nest";
+import {
+  assert,
+  INestMiddleware,
+  Injectable,
+  Next,
+  type Request,
+  type Response,
+} from "@nest";
 import { Logger } from "../tools/log.ts";
 import { SessionService } from "@/session/session.service.ts";
 import { SESSION_KEY } from "@/session/session.schema.ts";
 
 @Injectable()
-export class SessionInterceptor implements NestInterceptor {
+export class SessionMiddleware implements INestMiddleware {
   constructor(
     private readonly sessionService: SessionService,
     private readonly logger: Logger,
   ) {}
-  async intercept(context: Context, next: Next) {
-    let sessionId = await context.cookies.get(SESSION_KEY);
+  async use(req: Request, res: Response, next: Next) {
+    let sessionId = await req.cookies.get(SESSION_KEY);
     let session;
     if (sessionId) {
       session = await this.sessionService.findById(sessionId, true).catch((
@@ -30,7 +37,7 @@ export class SessionInterceptor implements NestInterceptor {
       };
     }
 
-    const { states } = context.request;
+    const { states } = req;
     states.session = session;
     states.locals = {
       success: session.success,
@@ -41,14 +48,14 @@ export class SessionInterceptor implements NestInterceptor {
     await next();
 
     assert(sessionId);
-    await context.cookies.set(SESSION_KEY, sessionId, {
+    await res.cookies.set(SESSION_KEY, sessionId, {
       httpOnly: true,
       secure: false,
       maxAge: 60 * 60 * 24 * 7,
       sameSite: "Strict",
     });
 
-    const { success, error, userId } = context.request.states;
+    const { success, error, userId } = req.states;
     if (success || error || userId !== undefined) {
       await this.sessionService.update({
         id: sessionId,

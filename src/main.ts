@@ -5,6 +5,7 @@ import globals from "./globals.ts";
 import { anyExceptionFilter, getLogMiddleware } from "@nest/uinv";
 import { logger } from "./tools/log.ts";
 import { render } from "./tools/ejs.ts";
+import { SessionMiddleware } from "@/session/session.middleware.ts";
 
 const app = await NestFactory.create(AppModule, Router);
 
@@ -13,6 +14,8 @@ const app = await NestFactory.create(AppModule, Router);
 app.use(getLogMiddleware({
   logger,
 }));
+
+await app.use(SessionMiddleware);
 
 app.useGlobalFilters(anyExceptionFilter({
   logger,
