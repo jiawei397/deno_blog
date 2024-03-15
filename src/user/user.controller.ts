@@ -8,6 +8,7 @@ import {
   Get,
   Params,
   Post,
+  REDIRECT_BACK,
   Res,
   type Response,
   UseGuards,
@@ -93,15 +94,17 @@ export class UserController {
     return render("signin", {});
   }
 
-  /** 登陆 */
+  /**
+   * 登陆
+   * 由于要跳转，所以不能直接校验参数
+   */
   @Post("signin")
   @UseGuards(LoginedGuard)
   async signin(
-    @Form() params: SigninDto,
+    @Form() fields: typeof SigninDto.prototype,
     @Res() res: Response,
     @Flash() flash: Flash,
   ) {
-    const fields = params.fields;
     try {
       await validateParams(SigninDto, fields);
     } catch (error) {

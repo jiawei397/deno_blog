@@ -7,7 +7,7 @@ import {
   Post,
   Query,
   Res,
-  Response,
+  type Response,
   UseGuards,
 } from "@nest";
 import { SSOGuard } from "../guards/sso.guard.ts";

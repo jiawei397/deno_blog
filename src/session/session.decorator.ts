@@ -4,7 +4,7 @@ import { CreateSession } from "./session.interface.ts";
 export const Flash = createParamDecorator(
   (context: Context): Flash => {
     return (key, val) => {
-      context.state[key] = val;
+      context.request.states[key] = val;
     };
   },
 );
@@ -16,6 +16,6 @@ export type Flash = (
 
 export const UserParam = createParamDecorator(
   (context: Context) => {
-    return context.state.session?.user;
+    return context.request.states.session?.user;
   },
 );

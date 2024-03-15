@@ -1,33 +1,28 @@
 // deno-lint-ignore-file no-explicit-any
 import { getLogger, initLog } from "date_file_log";
 import globals from "../globals.ts";
-import { Injectable, Reflect } from "@nest";
+import { type Constructor, Inject, Injectable, INQUIRER, Scope } from "@nest";
 
 await initLog(globals.log);
 
 export const logger = getLogger();
 
 @Injectable({
-  singleton: false,
+  scope: Scope.TRANSIENT,
 })
 export class Logger {
-  constructor() {
-    this.debug = this.debug.bind(this);
-    this.info = this.info.bind(this);
-    this.warn = this.warn.bind(this);
-    this.error = this.error.bind(this);
-  }
-  private get pre() {
-    const parent = Reflect.getMetadata("meta:container", this);
-    return parent?.name;
+  private parentName?: string;
+
+  constructor(@Inject(INQUIRER) private parentClass: Constructor) {
+    this.parentName = this.parentClass.name;
   }
 
-  protected write(
+  private write(
     methodName: "warning" | "info" | "debug" | "error",
     ...messages: any[]
   ): void {
-    if (this?.pre) {
-      logger[methodName](this.pre, ...messages);
+    if (this.parentName) {
+      logger[methodName](this.parentName, ...messages);
     } else {
       const [first, ...others] = messages;
       logger[methodName](first, ...others);
@@ -38,15 +33,15 @@ export class Logger {
     this.write("debug", ...messages);
   }
 
-  info(...messages: any[]) {
+  info(...messages: any[]): void {
     this.write("info", ...messages);
   }
 
-  warn(...messages: any[]) {
+  warn(...messages: any[]): void {
     this.write("warning", ...messages);
   }
 
-  error(...messages: any[]) {
+  error(...messages: any[]): void {
     this.write("error", ...messages);
   }
 }

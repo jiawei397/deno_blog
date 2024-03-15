@@ -8,14 +8,14 @@ export class SSOGuard implements CanActivate {
   canActivate(context: Context) {
     const b = this.validateRequest(context);
     if (!b) {
-      context.state.error = "未登陆";
+      context.request.states.error = "未登陆";
       context.response.redirect("/signin");
     }
     return b;
   }
 
   validateRequest(context: Context) {
-    return context.state.session?.user;
+    return context.request.states.session?.user;
   }
 }
 
@@ -27,13 +27,14 @@ export class LoginedGuard implements CanActivate {
   canActivate(context: Context) {
     const b = this.validateRequest(context);
     if (!b) {
-      context.state.error = "已登陆";
+      context.request.states.error = "已登陆";
       context.response.redirect("/posts");
     }
     return b;
   }
 
   validateRequest(context: Context) {
-    return !context.state.session || !context.state.session.user;
+    return !context.request.states.session ||
+      !context.request.states.session.user;
   }
 }

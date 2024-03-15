@@ -3,6 +3,7 @@
   "name": "deno_blog",
   "lock": false,
   "compilerOptions": {
+    "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false
   },
